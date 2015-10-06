@@ -39,6 +39,18 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MesosSchedulerDriver.cs" />
+    <Compile Include="Registry\DriverRegistry.cs" />
+    <Compile Include="Registry\UniqueIdGenerator.cs" />
+    <Compile Include="Native\ClrType.cs" />
+    <Compile Include="Native\INativeSchedulerDriver.cs" />
+    <Compile Include="Native\INativeExecutorDriver.cs" />
+    <Compile Include="Native\INativeDriver.cs" />
+    <Compile Include="Native\Mono\MonoSchedulerDriver.cs" />
+    <Compile Include="Native\Mono\MonoImports.cs" />
+    <Compile Include="Native\Mono\MonoExecutorDriver.cs" />
+    <Compile Include="Native\NativeDriverFactory.cs" />
+    <Compile Include="MesosExecutorDriver.cs" />
     <Compile Include="ISchedulerDriver.cs" />
     <Compile Include="IScheduler.cs" />
     <Compile Include="IExecutorDriver.cs" />
@@ -56,6 +68,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
