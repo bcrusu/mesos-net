@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using mesos;
 
 namespace com.bcrusu.mesosclr.Native.Mono
 {
     internal class MonoSchedulerDriver : INativeSchedulerDriver
     {
+        private IntPtr _nativeDriverPtr;
+
         ~MonoSchedulerDriver()
         {
             Dispose(false);
@@ -13,7 +16,7 @@ namespace com.bcrusu.mesosclr.Native.Mono
 
         public Status Start()
         {
-            throw new NotImplementedException();
+            return (Status)MonoImports.SchedulerDriver.Start(_nativeDriverPtr);
         }
 
         public Status Stop(bool failover)
@@ -28,12 +31,12 @@ namespace com.bcrusu.mesosclr.Native.Mono
 
         public Status Abort()
         {
-            throw new NotImplementedException();
+            return (Status)MonoImports.SchedulerDriver.Abort(_nativeDriverPtr);
         }
 
         public Status Join()
         {
-            throw new NotImplementedException();
+            return (Status)MonoImports.SchedulerDriver.Join(_nativeDriverPtr);
         }
 
         public Status Run()
@@ -68,37 +71,55 @@ namespace com.bcrusu.mesosclr.Native.Mono
 
         public Status KillTask(TaskID taskId)
         {
-            throw new NotImplementedException();
+            var taskIdBytes = ProtoBufHelper.Serialize(taskId);
+
+            using (var pinned = MarshalHelper.CreatePinnedObject(taskIdBytes))
+                return (Status)MonoImports.SchedulerDriver.KillTask(_nativeDriverPtr, pinned.Ptr);
         }
 
         public Status AcceptOffers(IEnumerable<OfferID> offerIds, IEnumerable<Offer.Operation> operations, Filters filters)
         {
-            throw new NotImplementedException();
+            var offerIdsArrays = offerIds.Select(ProtoBufHelper.Serialize);
+            var operationsArrays = operations.Select(ProtoBufHelper.Serialize);
+            var filtersBytes = ProtoBufHelper.Serialize(filters);
+
+            using (var pinnedOfferIdsArrays = MarshalHelper.CreatePinnedObject(offerIdsArrays))
+            using (var pinnedOperationsArrays = MarshalHelper.CreatePinnedObject(operationsArrays))
+            using (var pinnedFiltersBytes = MarshalHelper.CreatePinnedObject(filtersBytes))
+                return (Status)MonoImports.SchedulerDriver.AcceptOffers(_nativeDriverPtr, pinnedOfferIdsArrays.Ptr, pinnedOperationsArrays.Ptr, pinnedFiltersBytes.Ptr);
         }
 
         public Status DeclineOffer(OfferID offerId, Filters filters)
         {
-            throw new NotImplementedException();
+            var offerIdBytes = ProtoBufHelper.Serialize(offerId);
+            var filtersBytes = ProtoBufHelper.Serialize(filters);
+
+            using (var pinnedOfferId = MarshalHelper.CreatePinnedObject(offerIdBytes))
+            using (var pinnedFilters = MarshalHelper.CreatePinnedObject(filtersBytes))
+                return (Status)MonoImports.SchedulerDriver.DeclineOffer(_nativeDriverPtr, pinnedOfferId.Ptr, pinnedFilters.Ptr);
         }
 
         public Status DeclineOffer(OfferID offerId)
         {
-            throw new NotImplementedException();
+            return DeclineOffer(offerId, new Filters());
         }
 
         public Status ReviveOffers()
         {
-            throw new NotImplementedException();
+            return (Status)MonoImports.SchedulerDriver.ReviveOffers(_nativeDriverPtr);
         }
 
         public Status SuppressOffers()
         {
-            throw new NotImplementedException();
+            return (Status)MonoImports.SchedulerDriver.SuppressOffers(_nativeDriverPtr);
         }
 
         public Status AcknowledgeStatusUpdate(TaskStatus status)
         {
-            throw new NotImplementedException();
+            var statusBytes = ProtoBufHelper.Serialize(status);
+
+            using (var pinned = MarshalHelper.CreatePinnedObject(statusBytes))
+                return (Status)MonoImports.SchedulerDriver.AcknowledgeStatusUpdate(_nativeDriverPtr, pinned.Ptr);
         }
 
         public Status SendFrameworkMessage(ExecutorID executorId, SlaveID slaveId, byte[] data)
@@ -119,12 +140,15 @@ namespace com.bcrusu.mesosclr.Native.Mono
 
         public void Initialize(long managedDriverId)
         {
-            throw new NotImplementedException();
+            _nativeDriverPtr = MonoImports.SchedulerDriver.Initialize(managedDriverId);
         }
 
         private void Dispose(bool disposing)
         {
-            //TODO
+            if (disposing)
+                GC.SuppressFinalize(this);
+
+            MonoImports.SchedulerDriver.Finalize(_nativeDriverPtr);
         }
     }
 }

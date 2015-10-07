@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -40,6 +41,9 @@
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Native\Array.cs" />
+    <Compile Include="Native\MarshalHelper.cs" />
+    <Compile Include="Native\PinnedObject.cs" />
     <Compile Include="ProtoBufHelper.cs" />
     <Compile Include="MesosSchedulerDriver.cs" />
     <Compile Include="Registry\DriverRegistry.cs" />

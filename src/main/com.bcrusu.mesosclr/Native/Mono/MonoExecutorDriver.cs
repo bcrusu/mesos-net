@@ -40,12 +40,15 @@ namespace com.bcrusu.mesosclr.Native.Mono
         public Status SendStatusUpdate(TaskStatus status)
         {
             var statusBytes = ProtoBufHelper.Serialize(status);
-            return (Status)MonoImports.ExecutorDriver.SendStatusUpdate(_nativeDriverPtr, statusBytes);
+
+            using (var pinned = MarshalHelper.CreatePinnedObject(statusBytes))
+                return (Status)MonoImports.ExecutorDriver.SendStatusUpdate(_nativeDriverPtr, pinned.Ptr);
         }
 
         public Status SendFrameworkMessage(byte[] data)
         {
-            return (Status)MonoImports.ExecutorDriver.SendFrameworkMessage(_nativeDriverPtr, data);
+            using (var pinned = MarshalHelper.CreatePinnedObject(data))
+                return (Status)MonoImports.ExecutorDriver.SendFrameworkMessage(_nativeDriverPtr, pinned.Ptr);
         }
 
         public void Dispose()
