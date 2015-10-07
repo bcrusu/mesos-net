@@ -7,11 +7,11 @@ namespace com.bcrusu.mesosclr.Native
     {
         public static INativeExecutorDriver CreateExecutorDriver()
         {
-            switch (DetectClrType())
+            switch (DetectClrFlavor())
             {
-                case ClrType.Mono:
+                case ClrFlavor.Mono:
                     return new MonoExecutorDriver();
-                case ClrType.CoreClr:
+                case ClrFlavor.CoreClr:
                     throw new NotSupportedException();
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -20,21 +20,21 @@ namespace com.bcrusu.mesosclr.Native
 
         public static INativeSchedulerDriver CreateSchedulerDriver()
         {
-            switch (DetectClrType())
+            switch (DetectClrFlavor())
             {
-                case ClrType.Mono:
+                case ClrFlavor.Mono:
                     return new MonoSchedulerDriver();
-                case ClrType.CoreClr:
+                case ClrFlavor.CoreClr:
                     throw new NotSupportedException();
                 default:
                     throw new ArgumentOutOfRangeException();
             }
         }
 
-        private static ClrType DetectClrType()
+        private static ClrFlavor DetectClrFlavor()
         {
             //TODO:
-            return ClrType.Mono;
+            return ClrFlavor.Mono;
         }
     }
 }

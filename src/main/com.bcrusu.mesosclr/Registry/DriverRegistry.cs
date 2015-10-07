@@ -25,6 +25,18 @@ namespace com.bcrusu.mesosclr.Registry
             return id;
         }
 
+        public static void Unregister(MesosExecutorDriver executorDriver)
+        {
+            WeakReference tmp;
+            ExecutorDriverMap.TryRemove(executorDriver.Id, out tmp);
+        }
+
+        public static void Unregister(MesosSchedulerDriver schedulerDriver)
+        {
+            WeakReference tmp;
+            SchedulerDriverMap.TryRemove(schedulerDriver.Id, out tmp);
+        }
+
         public static MesosExecutorDriver GetExecutorDriver(long id)
         {
             return ExecutorDriverMap[id].Target as MesosExecutorDriver;

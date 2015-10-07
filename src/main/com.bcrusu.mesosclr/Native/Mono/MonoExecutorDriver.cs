@@ -5,60 +5,65 @@ namespace com.bcrusu.mesosclr.Native.Mono
 {
     internal class MonoExecutorDriver : INativeExecutorDriver
     {
+        private IntPtr _nativeDriverPtr;
+
         ~MonoExecutorDriver()
         {
-            Dispose(false);            
+            Dispose(false);
         }
 
         public Status Start()
         {
-            throw new NotImplementedException();
+            return (Status)MonoImports.ExecutorDriver.Start(_nativeDriverPtr);
         }
 
         public Status Stop()
         {
-            throw new NotImplementedException();
+            return (Status)MonoImports.ExecutorDriver.Stop(_nativeDriverPtr);
         }
 
         public Status Abort()
         {
-            throw new NotImplementedException();
+            return (Status)MonoImports.ExecutorDriver.Abort(_nativeDriverPtr);
         }
 
         public Status Join()
         {
-            throw new NotImplementedException();
+            return (Status)MonoImports.ExecutorDriver.Join(_nativeDriverPtr);
         }
 
         public Status Run()
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         public Status SendStatusUpdate(TaskStatus status)
         {
-            throw new NotImplementedException();
+            var statusBytes = ProtoBufHelper.Serialize(status);
+            return (Status)MonoImports.ExecutorDriver.SendStatusUpdate(_nativeDriverPtr, statusBytes);
         }
 
         public Status SendFrameworkMessage(byte[] data)
         {
-            throw new NotImplementedException();
+            return (Status)MonoImports.ExecutorDriver.SendFrameworkMessage(_nativeDriverPtr, data);
         }
 
         public void Dispose()
         {
             Dispose(true);
-            GC.SuppressFinalize(this);
         }
 
         public void Initialize(long managedDriverId)
         {
-            throw new NotImplementedException();
+            _nativeDriverPtr = MonoImports.ExecutorDriver.Initialize(managedDriverId);
         }
 
         private void Dispose(bool disposing)
         {
-            //TODO
+            if (disposing)
+                GC.SuppressFinalize(this);
+
+            MonoImports.ExecutorDriver.Finalize(_nativeDriverPtr);
         }
     }
 }

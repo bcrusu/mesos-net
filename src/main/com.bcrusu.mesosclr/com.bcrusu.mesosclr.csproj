@@ -37,12 +37,14 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ProtoBufHelper.cs" />
     <Compile Include="MesosSchedulerDriver.cs" />
     <Compile Include="Registry\DriverRegistry.cs" />
     <Compile Include="Registry\UniqueIdGenerator.cs" />
-    <Compile Include="Native\ClrType.cs" />
+    <Compile Include="Native\ClrFlavor.cs" />
     <Compile Include="Native\INativeSchedulerDriver.cs" />
     <Compile Include="Native\INativeExecutorDriver.cs" />
     <Compile Include="Native\INativeDriver.cs" />

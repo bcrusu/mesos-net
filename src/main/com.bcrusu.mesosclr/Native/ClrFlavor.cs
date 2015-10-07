@@ -1,6 +1,6 @@
 ﻿namespace com.bcrusu.mesosclr.Native
 {
-    internal enum ClrType
+    internal enum ClrFlavor
     {
         Mono,
         CoreClr

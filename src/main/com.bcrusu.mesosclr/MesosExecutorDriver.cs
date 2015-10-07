@@ -8,20 +8,25 @@ namespace com.bcrusu.mesosclr
     public class MesosExecutorDriver : IExecutorDriver
     {
         private readonly IExecutor _executor;
-        private readonly long _id;
         private readonly INativeExecutorDriver _nativeExecutorDriver;
 
         public MesosExecutorDriver(IExecutor executor)
         {
             if (executor == null) throw new ArgumentNullException(nameof(executor));
-
             _executor = executor;
 
-            _id = DriverRegistry.Register(this);
-            _nativeExecutorDriver = NativeDriverFactory.CreateExecutorDriver();
+            Id = DriverRegistry.Register(this);
 
-            _nativeExecutorDriver.Initialize(_id);
+            _nativeExecutorDriver = NativeDriverFactory.CreateExecutorDriver();
+            _nativeExecutorDriver.Initialize(Id);
         }
+
+        ~MesosExecutorDriver()
+        {
+            DriverRegistry.Unregister(this);
+        }
+
+        internal long Id { get; private set; }
 
         public Status Start()
         {
