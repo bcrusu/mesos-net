@@ -42,7 +42,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Native\Array.cs" />
+    <Compile Include="Native\INativeExecutorDriver.cs" />
     <Compile Include="Native\MarshalHelper.cs" />
+    <Compile Include="Native\Mono\MonoSchedulerDriver.cs" />
+    <Compile Include="Native\Mono\MonoExecutorDriver.cs" />
     <Compile Include="Native\PinnedObject.cs" />
     <Compile Include="ProtoBufHelper.cs" />
     <Compile Include="MesosSchedulerDriver.cs" />
@@ -50,12 +53,10 @@
     <Compile Include="Registry\UniqueIdGenerator.cs" />
     <Compile Include="Native\ClrFlavor.cs" />
     <Compile Include="Native\INativeSchedulerDriver.cs" />
-    <Compile Include="Native\INativeExecutorDriver.cs" />
-    <Compile Include="Native\INativeDriver.cs" />
-    <Compile Include="Native\Mono\MonoSchedulerDriver.cs" />
+    <Compile Include="Native\SchedulerDriverBridge.cs" />
     <Compile Include="Native\Mono\MonoImports.cs" />
-    <Compile Include="Native\Mono\MonoExecutorDriver.cs" />
-    <Compile Include="Native\NativeDriverFactory.cs" />
+    <Compile Include="Native\ExecutorDriverBridge.cs" />
+    <Compile Include="Native\BridgeFactory.cs" />
     <Compile Include="MesosExecutorDriver.cs" />
     <Compile Include="ISchedulerDriver.cs" />
     <Compile Include="IScheduler.cs" />

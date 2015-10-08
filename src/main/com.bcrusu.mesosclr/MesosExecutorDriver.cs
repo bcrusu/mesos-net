@@ -5,10 +5,10 @@ using mesos;
 
 namespace com.bcrusu.mesosclr
 {
-    public class MesosExecutorDriver : IExecutorDriver
+    public sealed class MesosExecutorDriver : IExecutorDriver, IDisposable
     {
         private readonly IExecutor _executor;
-        private readonly INativeExecutorDriver _nativeExecutorDriver;
+        private readonly ExecutorDriverBridge _bridge;
 
         public MesosExecutorDriver(IExecutor executor)
         {
@@ -16,54 +16,63 @@ namespace com.bcrusu.mesosclr
             _executor = executor;
 
             Id = DriverRegistry.Register(this);
-
-            _nativeExecutorDriver = NativeDriverFactory.CreateExecutorDriver();
-            _nativeExecutorDriver.Initialize(Id);
+            _bridge = BridgeFactory.CreateExecutorDriver(Id);
         }
 
         ~MesosExecutorDriver()
         {
-            DriverRegistry.Unregister(this);
+            Dispose(false);
         }
 
-        internal long Id { get; private set; }
+        internal long Id { get; }
 
         public Status Start()
         {
-            return _nativeExecutorDriver.Start();
+            return _bridge.Start();
         }
 
         public Status Stop()
         {
-            return _nativeExecutorDriver.Stop();
+            return _bridge.Stop();
         }
 
         public Status Abort()
         {
-            return _nativeExecutorDriver.Abort();
+            return _bridge.Abort();
         }
 
         public Status Join()
         {
-            return _nativeExecutorDriver.Join();
+            return _bridge.Join();
         }
 
         public Status Run()
         {
-            var status = Start();
-            status = status != Status.DRIVER_RUNNING ? status : Join();
-
-            return status;
+            return _bridge.Run();
         }
 
         public Status SendStatusUpdate(TaskStatus status)
         {
-            return _nativeExecutorDriver.SendStatusUpdate(status);
+            return _bridge.SendStatusUpdate(status);
         }
 
         public Status SendFrameworkMessage(byte[] data)
         {
-            return _nativeExecutorDriver.SendFrameworkMessage(data);
+            return _bridge.SendFrameworkMessage(data);
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (disposing)
+                GC.SuppressFinalize(this);
+
+            _bridge.Dispose();
+            DriverRegistry.Unregister(this);
         }
     }
 }

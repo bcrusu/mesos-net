@@ -18,7 +18,7 @@ namespace com.bcrusu.mesosclr.Native
             Ptr = _gcHandle.AddrOfPinnedObject();
         }
 
-        public IntPtr Ptr { get; set; }
+        public IntPtr Ptr { get; private set; }
 
         public void Dispose()
         {

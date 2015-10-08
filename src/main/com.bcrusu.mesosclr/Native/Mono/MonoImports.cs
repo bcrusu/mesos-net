@@ -57,11 +57,11 @@ namespace com.bcrusu.mesosclr.Native.Mono
             [DllImport(NativeLibraryFileName, EntryPoint = "com_bcrusu_mesosclr_mono_SchedulerDriver_RequestResources")]
             public static extern int RequestResources(IntPtr nativeDriverPtr, IntPtr requests);
 
-            [DllImport(NativeLibraryFileName, EntryPoint = "com_bcrusu_mesosclr_mono_SchedulerDriver_LaunchTasks")]
-            public static extern int LaunchTasks(IntPtr nativeDriverPtr, IntPtr offerId, IntPtr tasks, IntPtr filters);
+            [DllImport(NativeLibraryFileName, EntryPoint = "com_bcrusu_mesosclr_mono_SchedulerDriver_LaunchTasksForOffer")]
+            public static extern int LaunchTasksForOffer(IntPtr nativeDriverPtr, IntPtr offerId, IntPtr tasks, IntPtr filters);
 
-            [DllImport(NativeLibraryFileName, EntryPoint = "com_bcrusu_mesosclr_mono_SchedulerDriver_LaunchTasks2")]  //TODO: review - overloads
-            public static extern int LaunchTasks2(IntPtr nativeDriverPtr, IntPtr offerIds, IntPtr tasks, IntPtr filters);
+            [DllImport(NativeLibraryFileName, EntryPoint = "com_bcrusu_mesosclr_mono_SchedulerDriver_LaunchTasksForOffers")]
+            public static extern int LaunchTasksForOffers(IntPtr nativeDriverPtr, IntPtr offerIds, IntPtr tasks, IntPtr filters);
 
             [DllImport(NativeLibraryFileName, EntryPoint = "com_bcrusu_mesosclr_mono_SchedulerDriver_KillTask")]
             public static extern int KillTask(IntPtr nativeDriverPtr, IntPtr taskId);

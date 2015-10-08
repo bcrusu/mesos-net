@@ -1,72 +1,47 @@
 ﻿using System;
-using mesos;
 
 namespace com.bcrusu.mesosclr.Native.Mono
 {
     internal class MonoExecutorDriver : INativeExecutorDriver
     {
-        private IntPtr _nativeDriverPtr;
-
-        ~MonoExecutorDriver()
+        public IntPtr Initialize(long managedDriverId)
         {
-            Dispose(false);
+            return MonoImports.ExecutorDriver.Initialize(managedDriverId);
         }
 
-        public Status Start()
+        public void Finalize(IntPtr nativeDriverPtr)
         {
-            return (Status)MonoImports.ExecutorDriver.Start(_nativeDriverPtr);
+            MonoImports.ExecutorDriver.Finalize(nativeDriverPtr);
         }
 
-        public Status Stop()
+        public int Start(IntPtr nativeDriverPtr)
         {
-            return (Status)MonoImports.ExecutorDriver.Stop(_nativeDriverPtr);
+            return MonoImports.ExecutorDriver.Start(nativeDriverPtr);
         }
 
-        public Status Abort()
+        public int Stop(IntPtr nativeDriverPtr)
         {
-            return (Status)MonoImports.ExecutorDriver.Abort(_nativeDriverPtr);
+            return MonoImports.ExecutorDriver.Stop(nativeDriverPtr);
         }
 
-        public Status Join()
+        public int Abort(IntPtr nativeDriverPtr)
         {
-            return (Status)MonoImports.ExecutorDriver.Join(_nativeDriverPtr);
+            return MonoImports.ExecutorDriver.Abort(nativeDriverPtr);
         }
 
-        public Status Run()
+        public int Join(IntPtr nativeDriverPtr)
         {
-            throw new NotSupportedException();
+            return MonoImports.ExecutorDriver.Join(nativeDriverPtr);
         }
 
-        public Status SendStatusUpdate(TaskStatus status)
+        public int SendStatusUpdate(IntPtr nativeDriverPtr, IntPtr status)
         {
-            var statusBytes = ProtoBufHelper.Serialize(status);
-
-            using (var pinned = MarshalHelper.CreatePinnedObject(statusBytes))
-                return (Status)MonoImports.ExecutorDriver.SendStatusUpdate(_nativeDriverPtr, pinned.Ptr);
+            return MonoImports.ExecutorDriver.SendStatusUpdate(nativeDriverPtr, status);
         }
 
-        public Status SendFrameworkMessage(byte[] data)
+        public int SendFrameworkMessage(IntPtr nativeDriverPtr, IntPtr data)
         {
-            using (var pinned = MarshalHelper.CreatePinnedObject(data))
-                return (Status)MonoImports.ExecutorDriver.SendFrameworkMessage(_nativeDriverPtr, pinned.Ptr);
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-        }
-
-        public void Initialize(long managedDriverId)
-        {
-            _nativeDriverPtr = MonoImports.ExecutorDriver.Initialize(managedDriverId);
-        }
-
-        private void Dispose(bool disposing)
-        {
-            if (disposing)
-                GC.SuppressFinalize(this);
-
-            MonoImports.ExecutorDriver.Finalize(_nativeDriverPtr);
+            return MonoImports.ExecutorDriver.SendFrameworkMessage(nativeDriverPtr, data);
         }
     }
 }

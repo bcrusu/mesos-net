@@ -3,32 +3,46 @@ using com.bcrusu.mesosclr.Native.Mono;
 
 namespace com.bcrusu.mesosclr.Native
 {
-    internal static class NativeDriverFactory
+    internal static class BridgeFactory
     {
-        public static INativeExecutorDriver CreateExecutorDriver()
+        public static ExecutorDriverBridge CreateExecutorDriver(long managedDriverId)
         {
+            INativeExecutorDriver nativeExecutor;
+
             switch (DetectClrFlavor())
             {
                 case ClrFlavor.Mono:
-                    return new MonoExecutorDriver();
+                    nativeExecutor = new MonoExecutorDriver();
+                    break;
                 case ClrFlavor.CoreClr:
                     throw new NotSupportedException();
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+
+            var result = new ExecutorDriverBridge(nativeExecutor);
+            result.Initialize(managedDriverId);
+            return result;
         }
 
-        public static INativeSchedulerDriver CreateSchedulerDriver()
+        public static SchedulerDriverBridge CreateSchedulerDriver(long managedDriverId)
         {
+            INativeSchedulerDriver nativeScheduler;
+
             switch (DetectClrFlavor())
             {
                 case ClrFlavor.Mono:
-                    return new MonoSchedulerDriver();
+                    nativeScheduler = new MonoSchedulerDriver();
+                    break;
                 case ClrFlavor.CoreClr:
                     throw new NotSupportedException();
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+
+            var result = new SchedulerDriverBridge(nativeScheduler);
+            result.Initialize(managedDriverId);
+            return result;
         }
 
         private static ClrFlavor DetectClrFlavor()

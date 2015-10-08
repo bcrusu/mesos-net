@@ -1,154 +1,92 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using mesos;
 
 namespace com.bcrusu.mesosclr.Native.Mono
 {
     internal class MonoSchedulerDriver : INativeSchedulerDriver
     {
-        private IntPtr _nativeDriverPtr;
-
-        ~MonoSchedulerDriver()
+        public IntPtr Initialize(long managedDriverId)
         {
-            Dispose(false);
+            return MonoImports.SchedulerDriver.Initialize(managedDriverId);
         }
 
-        public Status Start()
+        public void Finalize(IntPtr nativeDriverPtr)
         {
-            return (Status)MonoImports.SchedulerDriver.Start(_nativeDriverPtr);
+            MonoImports.SchedulerDriver.Finalize(nativeDriverPtr);
         }
 
-        public Status Stop(bool failover)
+        public int Start(IntPtr nativeDriverPtr)
         {
-            throw new NotImplementedException();
+            return MonoImports.SchedulerDriver.Start(nativeDriverPtr);
         }
 
-        public Status Stop()
+        public int Stop(IntPtr nativeDriverPtr, bool failover)
         {
-            throw new NotImplementedException();
+            return MonoImports.SchedulerDriver.Stop(nativeDriverPtr, failover);
         }
 
-        public Status Abort()
+        public int Abort(IntPtr nativeDriverPtr)
         {
-            return (Status)MonoImports.SchedulerDriver.Abort(_nativeDriverPtr);
+            return MonoImports.SchedulerDriver.Abort(nativeDriverPtr);
         }
 
-        public Status Join()
+        public int Join(IntPtr nativeDriverPtr)
         {
-            return (Status)MonoImports.SchedulerDriver.Join(_nativeDriverPtr);
+            return MonoImports.SchedulerDriver.Join(nativeDriverPtr);
         }
 
-        public Status Run()
+        public int RequestResources(IntPtr nativeDriverPtr, IntPtr requests)
         {
-            throw new NotImplementedException();
+            return MonoImports.SchedulerDriver.RequestResources(nativeDriverPtr, requests);
         }
 
-        public Status RequestResources(IEnumerable<Request> requests)
+        public int LaunchTasksForOffer(IntPtr nativeDriverPtr, IntPtr offerId, IntPtr tasks, IntPtr filters)
         {
-            throw new NotImplementedException();
+            return MonoImports.SchedulerDriver.LaunchTasksForOffer(nativeDriverPtr, offerId, tasks, filters);
         }
 
-        public Status LaunchTasks(IEnumerable<OfferID> offerIds, IEnumerable<TaskInfo> tasks, Filters filters)
+        public int LaunchTasksForOffers(IntPtr nativeDriverPtr, IntPtr offerIds, IntPtr tasks, IntPtr filters)
         {
-            throw new NotImplementedException();
+            return MonoImports.SchedulerDriver.LaunchTasksForOffers(nativeDriverPtr, offerIds, tasks, filters);
         }
 
-        public Status LaunchTasks(IEnumerable<OfferID> offerIds, IEnumerable<TaskInfo> tasks)
+        public int KillTask(IntPtr nativeDriverPtr, IntPtr taskId)
         {
-            throw new NotImplementedException();
+            return MonoImports.SchedulerDriver.KillTask(nativeDriverPtr, taskId);
         }
 
-        public Status LaunchTasks(OfferID offerId, IEnumerable<TaskInfo> tasks, Filters filters)
+        public int AcceptOffers(IntPtr nativeDriverPtr, IntPtr offerIds, IntPtr operations, IntPtr filters)
         {
-            throw new NotImplementedException();
+            return MonoImports.SchedulerDriver.AcceptOffers(nativeDriverPtr, offerIds, operations, filters);
         }
 
-        public Status LaunchTasks(OfferID offerId, IEnumerable<TaskInfo> tasks)
+        public int DeclineOffer(IntPtr nativeDriverPtr, IntPtr offerId, IntPtr filters)
         {
-            throw new NotImplementedException();
+            return MonoImports.SchedulerDriver.DeclineOffer(nativeDriverPtr, offerId, filters);
         }
 
-        public Status KillTask(TaskID taskId)
+        public int ReviveOffers(IntPtr nativeDriverPtr)
         {
-            var taskIdBytes = ProtoBufHelper.Serialize(taskId);
-
-            using (var pinned = MarshalHelper.CreatePinnedObject(taskIdBytes))
-                return (Status)MonoImports.SchedulerDriver.KillTask(_nativeDriverPtr, pinned.Ptr);
+            return MonoImports.SchedulerDriver.ReviveOffers(nativeDriverPtr);
         }
 
-        public Status AcceptOffers(IEnumerable<OfferID> offerIds, IEnumerable<Offer.Operation> operations, Filters filters)
+        public int SuppressOffers(IntPtr nativeDriverPtr)
         {
-            var offerIdsArrays = offerIds.Select(ProtoBufHelper.Serialize);
-            var operationsArrays = operations.Select(ProtoBufHelper.Serialize);
-            var filtersBytes = ProtoBufHelper.Serialize(filters);
-
-            using (var pinnedOfferIdsArrays = MarshalHelper.CreatePinnedObject(offerIdsArrays))
-            using (var pinnedOperationsArrays = MarshalHelper.CreatePinnedObject(operationsArrays))
-            using (var pinnedFiltersBytes = MarshalHelper.CreatePinnedObject(filtersBytes))
-                return (Status)MonoImports.SchedulerDriver.AcceptOffers(_nativeDriverPtr, pinnedOfferIdsArrays.Ptr, pinnedOperationsArrays.Ptr, pinnedFiltersBytes.Ptr);
+            return MonoImports.SchedulerDriver.SuppressOffers(nativeDriverPtr);
         }
 
-        public Status DeclineOffer(OfferID offerId, Filters filters)
+        public int AcknowledgeStatusUpdate(IntPtr nativeDriverPtr, IntPtr status)
         {
-            var offerIdBytes = ProtoBufHelper.Serialize(offerId);
-            var filtersBytes = ProtoBufHelper.Serialize(filters);
-
-            using (var pinnedOfferId = MarshalHelper.CreatePinnedObject(offerIdBytes))
-            using (var pinnedFilters = MarshalHelper.CreatePinnedObject(filtersBytes))
-                return (Status)MonoImports.SchedulerDriver.DeclineOffer(_nativeDriverPtr, pinnedOfferId.Ptr, pinnedFilters.Ptr);
+            return MonoImports.SchedulerDriver.AcknowledgeStatusUpdate(nativeDriverPtr, status);
         }
 
-        public Status DeclineOffer(OfferID offerId)
+        public int SendFrameworkMessage(IntPtr nativeDriverPtr, IntPtr executorId, IntPtr slaveId, IntPtr data)
         {
-            return DeclineOffer(offerId, new Filters());
+            return MonoImports.SchedulerDriver.SendFrameworkMessage(nativeDriverPtr, executorId, slaveId, data);
         }
 
-        public Status ReviveOffers()
+        public int ReconcileTasks(IntPtr nativeDriverPtr, IntPtr statuses)
         {
-            return (Status)MonoImports.SchedulerDriver.ReviveOffers(_nativeDriverPtr);
-        }
-
-        public Status SuppressOffers()
-        {
-            return (Status)MonoImports.SchedulerDriver.SuppressOffers(_nativeDriverPtr);
-        }
-
-        public Status AcknowledgeStatusUpdate(TaskStatus status)
-        {
-            var statusBytes = ProtoBufHelper.Serialize(status);
-
-            using (var pinned = MarshalHelper.CreatePinnedObject(statusBytes))
-                return (Status)MonoImports.SchedulerDriver.AcknowledgeStatusUpdate(_nativeDriverPtr, pinned.Ptr);
-        }
-
-        public Status SendFrameworkMessage(ExecutorID executorId, SlaveID slaveId, byte[] data)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Status ReconcileTasks(IEnumerable<TaskStatus> statuses)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        public void Initialize(long managedDriverId)
-        {
-            _nativeDriverPtr = MonoImports.SchedulerDriver.Initialize(managedDriverId);
-        }
-
-        private void Dispose(bool disposing)
-        {
-            if (disposing)
-                GC.SuppressFinalize(this);
-
-            MonoImports.SchedulerDriver.Finalize(_nativeDriverPtr);
+            return MonoImports.SchedulerDriver.ReconcileTasks(nativeDriverPtr, statuses);
         }
     }
 }
