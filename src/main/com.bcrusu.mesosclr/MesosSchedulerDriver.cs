@@ -8,16 +8,33 @@ namespace com.bcrusu.mesosclr
 {
     public sealed class MesosSchedulerDriver : ISchedulerDriver, IDisposable
     {
-        private IScheduler _scheduler;
         private readonly SchedulerDriverBridge _bridge;
 
-        public MesosSchedulerDriver(IScheduler scheduler)
+        //TODO: pass ctor params to native driver
+        public MesosSchedulerDriver(IScheduler scheduler, FrameworkInfo frameworkInfo, string masterAddress, Credential credential, bool implicitAcknowledgements)
         {
             if (scheduler == null) throw new ArgumentNullException(nameof(scheduler));
-            _scheduler = scheduler;
+            if (frameworkInfo == null) throw new ArgumentNullException(nameof(frameworkInfo));
+            if (masterAddress == null) throw new ArgumentNullException(nameof(masterAddress));
 
+            Scheduler = scheduler;
             Id = DriverRegistry.Register(this);
-            _bridge = BridgeFactory.CreateSchedulerDriver(Id);
+            _bridge = BridgeFactory.CreateSchedulerDriverBridge(Id);
+        }
+
+        public MesosSchedulerDriver(IScheduler scheduler, FrameworkInfo frameworkInfo, string masterAddress)
+            : this(scheduler, frameworkInfo, masterAddress, null, true)
+        {
+        }
+
+        public MesosSchedulerDriver(IScheduler scheduler, FrameworkInfo frameworkInfo, string masterAddress, Credential credential)
+            : this(scheduler, frameworkInfo, masterAddress, credential, true)
+        {
+        }
+
+        public MesosSchedulerDriver(IScheduler scheduler, FrameworkInfo frameworkInfo, string masterAddress, bool implicitAcknowledgements)
+            : this(scheduler, frameworkInfo, masterAddress, null, implicitAcknowledgements)
+        {
         }
 
         ~MesosSchedulerDriver()
@@ -26,6 +43,8 @@ namespace com.bcrusu.mesosclr
         }
 
         internal long Id { get; }
+
+        internal IScheduler Scheduler { get; }
 
         public Status Start()
         {

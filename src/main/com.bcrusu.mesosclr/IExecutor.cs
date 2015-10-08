@@ -1,5 +1,4 @@
-﻿using System;
-using mesos;
+﻿using mesos;
 
 namespace com.bcrusu.mesosclr
 {
@@ -11,7 +10,7 @@ namespace com.bcrusu.mesosclr
 
         void Disconnected(IExecutorDriver driver);
 
-        void LaunchTask(IExecutorDriver driver, TaskInfo task);
+        void LaunchTask(IExecutorDriver driver, TaskInfo taskInfo);
 
         void KillTask(IExecutorDriver driver, TaskID taskId);
 
@@ -19,6 +18,6 @@ namespace com.bcrusu.mesosclr
 
         void Shutdown(IExecutorDriver driver);
 
-        void Error(IExecutorDriver driver, String message);
+        void Error(IExecutorDriver driver, string message);
     }
 }

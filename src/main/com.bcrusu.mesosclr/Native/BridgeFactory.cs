@@ -5,7 +5,7 @@ namespace com.bcrusu.mesosclr.Native
 {
     internal static class BridgeFactory
     {
-        public static ExecutorDriverBridge CreateExecutorDriver(long managedDriverId)
+        public static ExecutorDriverBridge CreateExecutorDriverBridge(long managedDriverId)
         {
             INativeExecutorDriver nativeExecutor;
 
@@ -25,7 +25,7 @@ namespace com.bcrusu.mesosclr.Native
             return result;
         }
 
-        public static SchedulerDriverBridge CreateSchedulerDriver(long managedDriverId)
+        public static SchedulerDriverBridge CreateSchedulerDriverBridge(long managedDriverId)
         {
             INativeSchedulerDriver nativeScheduler;
 

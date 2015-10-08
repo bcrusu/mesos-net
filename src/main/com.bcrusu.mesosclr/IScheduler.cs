@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using mesos;
-using TaskStatus = System.Threading.Tasks.TaskStatus;
 
 namespace com.bcrusu.mesosclr
 {
@@ -11,7 +10,7 @@ namespace com.bcrusu.mesosclr
 
         void Reregistered(ISchedulerDriver driver, MasterInfo masterInfo);
 
-        void ResourceOffers(ISchedulerDriver driver, List<Offer> offers);
+        void ResourceOffers(ISchedulerDriver driver, IEnumerable<Offer> offers);
 
         void OfferRescinded(ISchedulerDriver driver, OfferID offerId);
 
@@ -25,6 +24,6 @@ namespace com.bcrusu.mesosclr
 
         void ExecutorLost(ISchedulerDriver driver, ExecutorID executorId, SlaveID slaveId, int status);
 
-        void Error(ISchedulerDriver driver, String message);
+        void Error(ISchedulerDriver driver, string message);
     }
 }

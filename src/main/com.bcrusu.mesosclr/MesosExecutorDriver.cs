@@ -7,16 +7,15 @@ namespace com.bcrusu.mesosclr
 {
     public sealed class MesosExecutorDriver : IExecutorDriver, IDisposable
     {
-        private readonly IExecutor _executor;
         private readonly ExecutorDriverBridge _bridge;
 
         public MesosExecutorDriver(IExecutor executor)
         {
             if (executor == null) throw new ArgumentNullException(nameof(executor));
-            _executor = executor;
 
+            Executor = executor;
             Id = DriverRegistry.Register(this);
-            _bridge = BridgeFactory.CreateExecutorDriver(Id);
+            _bridge = BridgeFactory.CreateExecutorDriverBridge(Id);
         }
 
         ~MesosExecutorDriver()
@@ -25,6 +24,8 @@ namespace com.bcrusu.mesosclr
         }
 
         internal long Id { get; }
+
+        internal IExecutor Executor { get; }
 
         public Status Start()
         {

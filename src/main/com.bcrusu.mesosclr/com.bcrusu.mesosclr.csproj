@@ -42,7 +42,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Native\Array.cs" />
+    <Compile Include="Native\ExecutorAdapter.cs" />
     <Compile Include="Native\INativeExecutorDriver.cs" />
+    <Compile Include="Native\SchedulerAdapter.cs" />
     <Compile Include="Native\MarshalHelper.cs" />
     <Compile Include="Native\Mono\MonoSchedulerDriver.cs" />
     <Compile Include="Native\Mono\MonoExecutorDriver.cs" />
