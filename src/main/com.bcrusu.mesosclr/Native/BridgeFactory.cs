@@ -5,7 +5,7 @@ namespace com.bcrusu.mesosclr.Native
 {
     internal static class BridgeFactory
     {
-        public static ExecutorDriverBridge CreateExecutorDriverBridge(long managedDriverId)
+        public static ExecutorDriverBridge CreateExecutorDriverBridge()
         {
             INativeExecutorDriver nativeExecutor;
 
@@ -20,12 +20,10 @@ namespace com.bcrusu.mesosclr.Native
                     throw new ArgumentOutOfRangeException();
             }
 
-            var result = new ExecutorDriverBridge(nativeExecutor);
-            result.Initialize(managedDriverId);
-            return result;
+			return new ExecutorDriverBridge(nativeExecutor);
         }
 
-        public static SchedulerDriverBridge CreateSchedulerDriverBridge(long managedDriverId)
+        public static SchedulerDriverBridge CreateSchedulerDriverBridge()
         {
             INativeSchedulerDriver nativeScheduler;
 
@@ -40,9 +38,7 @@ namespace com.bcrusu.mesosclr.Native
                     throw new ArgumentOutOfRangeException();
             }
 
-            var result = new SchedulerDriverBridge(nativeScheduler);
-            result.Initialize(managedDriverId);
-            return result;
+			return new SchedulerDriverBridge(nativeScheduler);
         }
 
         private static ClrFlavor DetectClrFlavor()

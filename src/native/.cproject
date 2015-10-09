@@ -39,11 +39,13 @@
 									<listOptionValue builtIn="false" value="/home/bcrusu/work/github/mesos/build/include"/>
 									<listOptionValue builtIn="false" value="/home/bcrusu/work/github/mesos/build/3rdparty/libprocess/3rdparty/glog-0.3.3/src/"/>
 									<listOptionValue builtIn="false" value="/home/bcrusu/work/github/mesos/3rdparty/libprocess/include/"/>
+									<listOptionValue builtIn="false" value="/usr/include/mono-2.0"/>
 								</option>
 								<option id="gnu.cpp.compiler.option.other.pic.2045959965" name="Position Independent Code (-fPIC)" superClass="gnu.cpp.compiler.option.other.pic" value="true" valueType="boolean"/>
 								<option id="gnu.cpp.compiler.option.dialect.std.1890161114" name="Language standard" superClass="gnu.cpp.compiler.option.dialect.std" value="gnu.cpp.compiler.dialect.default" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.option.other.other.141234617" name="Other flags" superClass="gnu.cpp.compiler.option.other.other" value="-c -fmessage-length=0 -std=c++11" valueType="string"/>
-								<option id="gnu.cpp.compiler.option.other.verbose.435950029" name="Verbose (-v)" superClass="gnu.cpp.compiler.option.other.verbose" value="true" valueType="boolean"/>
+								<option id="gnu.cpp.compiler.option.other.verbose.435950029" name="Verbose (-v)" superClass="gnu.cpp.compiler.option.other.verbose" value="false" valueType="boolean"/>
+								<option id="gnu.cpp.compiler.option.preprocessor.def.2127827914" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" valueType="definedSymbols"/>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1438052949" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.c.compiler.so.debug.69736823" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.so.debug">
@@ -59,10 +61,12 @@
 								<option defaultValue="true" id="gnu.cpp.link.so.debug.option.shared.1086222996" name="Shared (-shared)" superClass="gnu.cpp.link.so.debug.option.shared" valueType="boolean"/>
 								<option id="gnu.cpp.link.option.libs.1796577745" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
 									<listOptionValue builtIn="false" value="mesos"/>
+									<listOptionValue builtIn="false" value="mono-2.0"/>
 								</option>
 								<option id="gnu.cpp.link.option.paths.773296842" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
 									<listOptionValue builtIn="false" value="/home/bcrusu/work/github/mesos/build/src/.libs"/>
 								</option>
+								<option id="gnu.cpp.link.option.userobjs.321120204" name="Other objects" superClass="gnu.cpp.link.option.userobjs" valueType="userObjs"/>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.1730017977" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 									<additionalInput kind="additionalinput" paths="$(LIBS)"/>

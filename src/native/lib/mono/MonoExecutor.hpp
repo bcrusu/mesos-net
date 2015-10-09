@@ -11,7 +11,7 @@ namespace mesosclr {
 
 class MonoExecutor: public Executor {
 public:
-	MonoExecutor(long managedDriverId);
+	MonoExecutor(long managedExecutorDriverId);
 
 	virtual void registered(ExecutorDriver* driver, const ExecutorInfo& executorInfo, const FrameworkInfo& frameworkInfo, const SlaveInfo& slaveInfo);
 	virtual void reregistered(ExecutorDriver* driver, const SlaveInfo& slaveInfo);
@@ -23,7 +23,7 @@ public:
 	virtual void error(ExecutorDriver* driver, const string& message);
 
 private:
-	long _managedDriverId;
+	long _managedExecutorDriverId;
 };
 
 }

@@ -15,7 +15,8 @@ namespace com.bcrusu.mesosclr
 
             Executor = executor;
             Id = DriverRegistry.Register(this);
-            _bridge = BridgeFactory.CreateExecutorDriverBridge(Id);
+            _bridge = BridgeFactory.CreateExecutorDriverBridge();
+			_bridge.Initialize (Id);
         }
 
         ~MesosExecutorDriver()

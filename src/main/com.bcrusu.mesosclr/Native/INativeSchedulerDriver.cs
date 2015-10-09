@@ -4,7 +4,7 @@ namespace com.bcrusu.mesosclr.Native
 {
     internal interface INativeSchedulerDriver
     {
-        IntPtr Initialize(long managedDriverId);
+		IntPtr Initialize(long managedDriverId, IntPtr frameworkInfo, IntPtr masterAddress, bool implicitAcknowledgements, IntPtr credential);
 
         void Finalize(IntPtr nativeDriverPtr);
 

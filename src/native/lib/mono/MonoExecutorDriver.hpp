@@ -2,7 +2,6 @@
 #define MONO_MONOEXECUTORDRIVER_HPP_
 
 #include <mesos/executor.hpp>
-
 #include "MonoExecutor.hpp"
 
 using namespace mesos;

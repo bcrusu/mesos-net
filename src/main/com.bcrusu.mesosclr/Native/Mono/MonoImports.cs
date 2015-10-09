@@ -37,7 +37,7 @@ namespace com.bcrusu.mesosclr.Native.Mono
         public static class SchedulerDriver
         {
             [DllImport(NativeLibraryFileName, EntryPoint = "mesosclr_mono_SchedulerDriver_Initialize")]
-            public static extern IntPtr Initialize(long managedDriverId);
+			public static extern IntPtr Initialize(long managedDriverId, IntPtr frameworkInfo, IntPtr masterAddress, bool implicitAcknowledgements, IntPtr credential);
 
             [DllImport(NativeLibraryFileName, EntryPoint = "mesosclr_mono_SchedulerDriver_Finalize")]
             public static extern void Finalize(IntPtr nativeDriverPtr);

@@ -4,9 +4,9 @@ namespace com.bcrusu.mesosclr.Native.Mono
 {
     internal class MonoSchedulerDriver : INativeSchedulerDriver
     {
-        public IntPtr Initialize(long managedDriverId)
+		public IntPtr Initialize(long managedDriverId, IntPtr frameworkInfo, IntPtr masterAddress, bool implicitAcknowledgements, IntPtr credential)
         {
-            return MonoImports.SchedulerDriver.Initialize(managedDriverId);
+			return MonoImports.SchedulerDriver.Initialize(managedDriverId, frameworkInfo, masterAddress, implicitAcknowledgements, credential);
         }
 
         public void Finalize(IntPtr nativeDriverPtr)

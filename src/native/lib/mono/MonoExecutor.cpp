@@ -2,8 +2,8 @@
 
 namespace mesosclr {
 
-MonoExecutor::MonoExecutor(long managedDriverId) {
-	_managedDriverId = managedDriverId;
+MonoExecutor::MonoExecutor(long managedExecutorDriverId) {
+	_managedExecutorDriverId = managedExecutorDriverId;
 }
 
 void MonoExecutor::shutdown(ExecutorDriver* driver) {

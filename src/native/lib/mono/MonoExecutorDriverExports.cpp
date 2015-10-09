@@ -1,11 +1,15 @@
 #include "MonoExecutorDriver.hpp"
 #include "../ByteArray.hpp"
+#include <mono/metadata/appdomain.h>
 
 namespace mesosclr {
 extern "C" {
-MonoExecutorDriver* mesosclr_mono_ExecutorDriver_Initialize(long managedDriverId) {
-	MonoExecutor* executor = new MonoExecutor(managedDriverId);
+MonoExecutorDriver* mesosclr_mono_ExecutorDriver_Initialize(long managedExecutorDriverId) {
+	MonoExecutor* executor = new MonoExecutor(managedExecutorDriverId);
 	MonoExecutorDriver* driver = new MonoExecutorDriver(executor);
+
+	//TODO: MonoDomain *a = mono_domain_get();
+
 	return driver;
 }
 

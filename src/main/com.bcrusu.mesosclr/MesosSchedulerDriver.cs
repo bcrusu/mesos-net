@@ -10,8 +10,7 @@ namespace com.bcrusu.mesosclr
     {
         private readonly SchedulerDriverBridge _bridge;
 
-        //TODO: pass ctor params to native driver
-        public MesosSchedulerDriver(IScheduler scheduler, FrameworkInfo frameworkInfo, string masterAddress, Credential credential, bool implicitAcknowledgements)
+		public MesosSchedulerDriver(IScheduler scheduler, FrameworkInfo frameworkInfo, string masterAddress, bool implicitAcknowledgements, Credential credential)
         {
             if (scheduler == null) throw new ArgumentNullException(nameof(scheduler));
             if (frameworkInfo == null) throw new ArgumentNullException(nameof(frameworkInfo));
@@ -19,21 +18,22 @@ namespace com.bcrusu.mesosclr
 
             Scheduler = scheduler;
             Id = DriverRegistry.Register(this);
-            _bridge = BridgeFactory.CreateSchedulerDriverBridge(Id);
+            _bridge = BridgeFactory.CreateSchedulerDriverBridge();
+			_bridge.Initialize (Id, frameworkInfo, masterAddress, implicitAcknowledgements, credential);
         }
 
         public MesosSchedulerDriver(IScheduler scheduler, FrameworkInfo frameworkInfo, string masterAddress)
-            : this(scheduler, frameworkInfo, masterAddress, null, true)
+            : this(scheduler, frameworkInfo, masterAddress, true, null)
         {
         }
 
         public MesosSchedulerDriver(IScheduler scheduler, FrameworkInfo frameworkInfo, string masterAddress, Credential credential)
-            : this(scheduler, frameworkInfo, masterAddress, credential, true)
+            : this(scheduler, frameworkInfo, masterAddress, true, null)
         {
         }
 
         public MesosSchedulerDriver(IScheduler scheduler, FrameworkInfo frameworkInfo, string masterAddress, bool implicitAcknowledgements)
-            : this(scheduler, frameworkInfo, masterAddress, null, implicitAcknowledgements)
+            : this(scheduler, frameworkInfo, masterAddress, implicitAcknowledgements, null)
         {
         }
 

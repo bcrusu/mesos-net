@@ -3,35 +3,39 @@ using System.Linq;
 
 namespace com.bcrusu.mesosclr.Native
 {
-    internal static class MarshalHelper
-    {
-        public static PinnedObject CreatePinnedObject(byte[] bytes)
-        {
-            var bytesPinned = new PinnedObject(bytes);
+	internal static class MarshalHelper
+	{
+		public static PinnedObject CreatePinnedObject (byte[] bytes)
+		{
+			if (bytes == null)
+				return PinnedObject.Null;
+			
+			var bytesPinned = new PinnedObject (bytes);
 
-            var byteArray = new Array
-            {
-                Length = bytes.Length,
-                Items = bytesPinned.Ptr
-            };
+			var byteArray = new Array {
+				Length = bytes.Length,
+				Items = bytesPinned.Ptr
+			};
 
-            return new PinnedObject(byteArray, new[] { bytesPinned });
-        }
+			return new PinnedObject (byteArray, new[] { bytesPinned });
+		}
 
-        public static PinnedObject CreatePinnedObject(IEnumerable<byte[]> arrays)
-        {
-            var pinnedArrays = arrays.Select(CreatePinnedObject).ToList();
+		public static PinnedObject CreatePinnedObject (IEnumerable<byte[]> arrays)
+		{
+			if (arrays == null)
+				return PinnedObject.Null;
+			
+			var pinnedArrays = arrays.Select (CreatePinnedObject).ToList ();
 
-            var arrayPtrs = pinnedArrays.Select(x => x.Ptr).ToArray();
-            var pinnedArrayPtrs = new PinnedObject(arrayPtrs, pinnedArrays);
+			var arrayPtrs = pinnedArrays.Select (x => x.Ptr).ToArray ();
+			var pinnedArrayPtrs = new PinnedObject (arrayPtrs, pinnedArrays);
 
-            var array = new Array
-            {
-                Length = pinnedArrays.Count,
-                Items = pinnedArrayPtrs.Ptr
-            };
+			var array = new Array {
+				Length = pinnedArrays.Count,
+				Items = pinnedArrayPtrs.Ptr
+			};
 
-            return new PinnedObject(array, new[] { pinnedArrayPtrs });
-        }
-    }
+			return new PinnedObject (array, new[] { pinnedArrayPtrs });
+		}
+	}
 }
