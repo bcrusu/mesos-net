@@ -5,3 +5,5 @@ bin
 obj
 .vs
 *.sdf
+/src/native/Debug/
+*.userprefs
