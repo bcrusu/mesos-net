@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections;
 using System.IO;
+using com.bcrusu.mesosclr.Native;
 using ProtoBuf;
+using System.Collections.Generic;
 
 namespace com.bcrusu.mesosclr
 {
@@ -19,16 +22,32 @@ namespace com.bcrusu.mesosclr
             }
         }
 
-        public static T Deserialize<T>(byte[] bytes)
+        public unsafe static T Deserialize<T>(NativeArray* bytes)
             where T : IExtensible
         {
-            if (bytes == null || bytes.Length == 0)
+            var length = (*bytes).Length;
+            var data = (*bytes).Items;
+
+            if (length == 0 || data == IntPtr.Zero)
                 return default(T);
 
-            using (var ms = new MemoryStream(bytes))
+            using (var ms = new UnmanagedMemoryStream((byte*)data.ToPointer(), length))
             {
                 return Serializer.Deserialize<T>(ms);
             }
+        }
+
+        public unsafe static IEnumerable<TItem> DeserializeCollection<TItem>(NativeArray* collection)
+            where TItem : IExtensible
+        {
+            var length = (*collection).Length;
+            var items = (NativeArray**)(*collection).Items;
+
+            var result = new List<TItem>();
+            for (var i = 0; i < length; i++)
+                result.Add(ProtoBufHelper.Deserialize<TItem>(items[i]));
+
+            return result;
         }
     }
 }

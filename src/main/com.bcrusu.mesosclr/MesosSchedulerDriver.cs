@@ -18,7 +18,7 @@ namespace com.bcrusu.mesosclr
 
             Scheduler = scheduler;
             Id = DriverRegistry.Register(this);
-            _bridge = BridgeFactory.CreateSchedulerDriverBridge();
+            _bridge = new SchedulerDriverBridge();
 			_bridge.Initialize (Id, frameworkInfo, masterAddress, implicitAcknowledgements, credential);
         }
 

@@ -5,33 +5,26 @@ namespace com.bcrusu.mesosclr.Native
 {
     internal class ExecutorDriverBridge : IExecutorDriver, IDisposable
     {
-        private readonly INativeExecutorDriver _nativeExecutorDriver;
         private IntPtr _nativeDriverPtr;
-
-        public ExecutorDriverBridge(INativeExecutorDriver nativeExecutorDriver)
-        {
-            if (nativeExecutorDriver == null) throw new ArgumentNullException(nameof(nativeExecutorDriver));
-            _nativeExecutorDriver = nativeExecutorDriver;
-        }
 
         public Status Start()
         {
-            return (Status)_nativeExecutorDriver.Start(_nativeDriverPtr);
+            return (Status)NativeImports.ExecutorDriver.Start(_nativeDriverPtr);
         }
 
         public Status Stop()
         {
-            return (Status)_nativeExecutorDriver.Stop(_nativeDriverPtr);
+            return (Status)NativeImports.ExecutorDriver.Stop(_nativeDriverPtr);
         }
 
         public Status Abort()
         {
-            return (Status)_nativeExecutorDriver.Abort(_nativeDriverPtr);
+            return (Status)NativeImports.ExecutorDriver.Abort(_nativeDriverPtr);
         }
 
         public Status Join()
         {
-            return (Status)_nativeExecutorDriver.Join(_nativeDriverPtr);
+            return (Status)NativeImports.ExecutorDriver.Join(_nativeDriverPtr);
         }
 
         public Status Run()
@@ -46,23 +39,28 @@ namespace com.bcrusu.mesosclr.Native
             var statusBytes = ProtoBufHelper.Serialize(status);
 
             using (var pinned = MarshalHelper.CreatePinnedObject(statusBytes))
-                return (Status)_nativeExecutorDriver.SendStatusUpdate(_nativeDriverPtr, pinned.Ptr);
+                return (Status)NativeImports.ExecutorDriver.SendStatusUpdate(_nativeDriverPtr, pinned.Ptr);
         }
 
         public Status SendFrameworkMessage(byte[] data)
         {
             using (var pinned = MarshalHelper.CreatePinnedObject(data))
-                return (Status)_nativeExecutorDriver.SendFrameworkMessage(_nativeDriverPtr, pinned.Ptr);
+                return (Status)NativeImports.ExecutorDriver.SendFrameworkMessage(_nativeDriverPtr, pinned.Ptr);
         }
 
         public void Initialize(long managedDriverId)
         {
-            _nativeDriverPtr = _nativeExecutorDriver.Initialize(managedDriverId);
+            var executorInterface = ExecutorCallbacks.GetExecutorInterface();
+
+            unsafe
+            {
+                _nativeDriverPtr = NativeImports.ExecutorDriver.Initialize(managedDriverId, &executorInterface);
+            }
         }
 
         public void Dispose()
         {
-            _nativeExecutorDriver.Finalize(_nativeDriverPtr);
+            NativeImports.ExecutorDriver.Finalize(_nativeDriverPtr);
         }
     }
 }

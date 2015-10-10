@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 namespace com.bcrusu.mesosclr.Native
 {
     [StructLayout(LayoutKind.Sequential)]
-    internal struct Array
+    internal struct NativeArray
     {
         public int Length;
 

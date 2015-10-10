@@ -41,24 +41,22 @@
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Native\Array.cs" />
-    <Compile Include="Native\ExecutorAdapter.cs" />
-    <Compile Include="Native\INativeExecutorDriver.cs" />
-    <Compile Include="Native\SchedulerAdapter.cs" />
+    <Compile Include="Native\SchedulerInterface.cs" />
+    <Compile Include="Native\SchedulerCallbacksSig.cs" />
+    <Compile Include="Native\ExecutorInterface.cs" />
+    <Compile Include="Native\NativeArray.cs" />
+    <Compile Include="Native\ExecutorCallbacks.cs" />
+    <Compile Include="Native\ExecutorCallbacksSig.cs" />
+    <Compile Include="Native\SchedulerCallbacks.cs" />
     <Compile Include="Native\MarshalHelper.cs" />
-    <Compile Include="Native\Mono\MonoSchedulerDriver.cs" />
-    <Compile Include="Native\Mono\MonoExecutorDriver.cs" />
     <Compile Include="Native\PinnedObject.cs" />
     <Compile Include="ProtoBufHelper.cs" />
     <Compile Include="MesosSchedulerDriver.cs" />
     <Compile Include="Registry\DriverRegistry.cs" />
     <Compile Include="Registry\UniqueIdGenerator.cs" />
-    <Compile Include="Native\ClrFlavor.cs" />
-    <Compile Include="Native\INativeSchedulerDriver.cs" />
     <Compile Include="Native\SchedulerDriverBridge.cs" />
-    <Compile Include="Native\Mono\MonoImports.cs" />
+    <Compile Include="Native\NativeImports.cs" />
     <Compile Include="Native\ExecutorDriverBridge.cs" />
-    <Compile Include="Native\BridgeFactory.cs" />
     <Compile Include="MesosExecutorDriver.cs" />
     <Compile Include="ISchedulerDriver.cs" />
     <Compile Include="IScheduler.cs" />

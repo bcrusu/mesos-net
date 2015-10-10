@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace com.bcrusu.mesosclr.Native
 {
@@ -12,7 +13,7 @@ namespace com.bcrusu.mesosclr.Native
 			
 			var bytesPinned = new PinnedObject (bytes);
 
-			var byteArray = new Array {
+			var byteArray = new NativeArray {
 				Length = bytes.Length,
 				Items = bytesPinned.Ptr
 			};
@@ -30,12 +31,23 @@ namespace com.bcrusu.mesosclr.Native
 			var arrayPtrs = pinnedArrays.Select (x => x.Ptr).ToArray ();
 			var pinnedArrayPtrs = new PinnedObject (arrayPtrs, pinnedArrays);
 
-			var array = new Array {
+			var array = new NativeArray {
 				Length = pinnedArrays.Count,
 				Items = pinnedArrayPtrs.Ptr
 			};
 
 			return new PinnedObject (array, new[] { pinnedArrayPtrs });
 		}
+
+	    public unsafe static byte[] ToMangedByteArray(NativeArray* bytes)
+	    {
+            var length = (*bytes).Length;
+            var data = (*bytes).Items;
+
+	        var result = new byte[length];
+	        Marshal.Copy(data, result, 0, length);
+
+	        return result;
+	    }
 	}
 }
