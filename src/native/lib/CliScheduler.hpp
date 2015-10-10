@@ -1,5 +1,5 @@
-#ifndef MONO_MONOSCHEDULER_HPP_
-#define MONO_MONOSCHEDULER_HPP_
+#ifndef CLISCHEDULER_HPP_
+#define CLISCHEDULER_HPP_
 
 #include <mesos/scheduler.hpp>
 
@@ -9,9 +9,9 @@ using std::vector;
 
 namespace mesosclr {
 
-class MonoScheduler: public Scheduler {
+class CliScheduler: public Scheduler {
 public:
-	MonoScheduler(long managedSchedulerDriverId);
+	CliScheduler(long managedSchedulerDriverId);
 
 	virtual void registered(SchedulerDriver* driver, const FrameworkID& frameworkId, const MasterInfo& masterInfo);
 	virtual void reregistered(SchedulerDriver*, const MasterInfo& masterInfo);
@@ -30,4 +30,4 @@ private:
 
 }
 
-#endif /* MONO_MONOSCHEDULER_HPP_ */
+#endif /* CLISCHEDULER_HPP_ */

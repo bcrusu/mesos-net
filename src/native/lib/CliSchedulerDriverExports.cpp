@@ -1,0 +1,80 @@
+#include "Array.hpp"
+#include "ByteArray.hpp"
+#include "CliSchedulerDriver.hpp"
+
+namespace mesosclr {
+extern "C" {
+CliSchedulerDriver* mesosclr_SchedulerDriver_Initialize(long managedSchedulerDriverId, ByteArray* frameworkInfo, std::string* masterAddress,
+		bool implicitAcknowledgements, ByteArray* credential) {
+	//CliScheduler* scheduler = new CliScheduler(managedSchedulerDriverId);
+	//CliSchedulerDriver* driver = new CliSchedulerDriver(scheduler);
+	//return driver;
+
+	return NULL; //TODO
+}
+
+void mesosclr_SchedulerDriver_Finalize(CliSchedulerDriver *driver) {
+
+}
+
+int mesosclr_SchedulerDriver_Start(CliSchedulerDriver *driver) {
+	return 0; //TODO
+}
+
+int mesosclr_SchedulerDriver_Stop(CliSchedulerDriver *driver, bool failover) {
+	return 0; //TODO
+}
+
+int mesosclr_SchedulerDriver_Abort(CliSchedulerDriver *driver) {
+	return 0; //TODO
+}
+
+int mesosclr_SchedulerDriver_Join(CliSchedulerDriver *driver) {
+	return 0; //TODO
+}
+
+int mesosclr_SchedulerDriver_RequestResources(CliSchedulerDriver *driver, Array* requests) {
+	return 0; //TODO
+}
+
+int mesosclr_SchedulerDriver_LaunchTasksForOffer(CliSchedulerDriver *driver, ByteArray* offerId, Array tasks, ByteArray* filters) {
+	return 0; //TODO
+}
+
+int mesosclr_SchedulerDriver_LaunchTasksForOffers(CliSchedulerDriver *driver, Array* offerIds, Array tasks, ByteArray* filters) {
+	return 0; //TODO
+}
+
+int mesosclr_SchedulerDriver_KillTask(CliSchedulerDriver *driver, ByteArray* taskId) {
+	return 0; //TODO
+}
+
+int mesosclr_SchedulerDriver_AcceptOffers(CliSchedulerDriver *driver, Array* offerIds, Array* operations, ByteArray* filters) {
+	return 0; //TODO
+}
+
+int mesosclr_SchedulerDriver_DeclineOffer(CliSchedulerDriver *driver, ByteArray* offerId, ByteArray* filters) {
+	return 0; //TODO
+}
+
+int mesosclr_SchedulerDriver_ReviveOffers(CliSchedulerDriver *driver) {
+	return 0; //TODO
+}
+
+int mesosclr_SchedulerDriver_SuppressOffers(CliSchedulerDriver *driver) {
+	return 0; //TODO
+}
+
+int mesosclr_SchedulerDriver_AcknowledgeStatusUpdate(CliSchedulerDriver *driver, ByteArray* status) {
+	return 0; //TODO
+}
+
+int mesosclr_SchedulerDriver_SendFrameworkMessage(CliSchedulerDriver *driver, ByteArray* executorId, ByteArray* slaveId, ByteArray* data) {
+	return 0; //TODO
+}
+
+int mesosclr_SchedulerDriver_ReconcileTasks(CliSchedulerDriver *driver, Array* statuses) {
+	return 0; //TODO
+}
+}
+}

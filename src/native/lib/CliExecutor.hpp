@@ -1,5 +1,5 @@
-#ifndef MONO_MONOEXECUTOR_HPP_
-#define MONO_MONOEXECUTOR_HPP_
+#ifndef CLIEXECUTOR_HPP_
+#define CLIEXECUTOR_HPP_
 
 #include <string>
 #include <mesos/executor.hpp>
@@ -9,9 +9,9 @@ using namespace mesos;
 
 namespace mesosclr {
 
-class MonoExecutor: public Executor {
+class CliExecutor: public Executor {
 public:
-	MonoExecutor(long managedExecutorDriverId);
+	CliExecutor(long managedExecutorDriverId);
 
 	virtual void registered(ExecutorDriver* driver, const ExecutorInfo& executorInfo, const FrameworkInfo& frameworkInfo, const SlaveInfo& slaveInfo);
 	virtual void reregistered(ExecutorDriver* driver, const SlaveInfo& slaveInfo);
@@ -28,4 +28,4 @@ private:
 
 }
 
-#endif /* MONO_MONOEXECUTOR_HPP_ */
+#endif /* CLIEXECUTOR_HPP_ */
