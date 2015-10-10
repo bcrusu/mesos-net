@@ -4,6 +4,8 @@
 #include <string>
 #include <mesos/executor.hpp>
 
+#include "ManagedExecutorInterface.hpp"
+
 using std::string;
 using namespace mesos;
 
@@ -11,7 +13,7 @@ namespace mesosclr {
 
 class CliExecutor: public Executor {
 public:
-	CliExecutor(long managedExecutorDriverId);
+	CliExecutor(long managedExecutorDriverId, ManagedExecutorInterface executorInterface);
 
 	virtual void registered(ExecutorDriver* driver, const ExecutorInfo& executorInfo, const FrameworkInfo& frameworkInfo, const SlaveInfo& slaveInfo);
 	virtual void reregistered(ExecutorDriver* driver, const SlaveInfo& slaveInfo);
@@ -24,6 +26,7 @@ public:
 
 private:
 	long _managedExecutorDriverId;
+	ManagedExecutorInterface _executorInterface;
 };
 
 }

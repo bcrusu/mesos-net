@@ -1,10 +1,12 @@
-#include "ByteArray.hpp"
+#include "Common.hpp"
 #include "CliExecutorDriver.hpp"
+#include "ManagedExecutorInterface.hpp"
 
 namespace mesosclr {
 extern "C" {
-CliExecutorDriver* mesosclr_ExecutorDriver_Initialize(long managedExecutorDriverId) {
-	CliExecutor* executor = new CliExecutor(managedExecutorDriverId);
+
+CliExecutorDriver* mesosclr_ExecutorDriver_Initialize(long managedExecutorDriverId, ManagedExecutorInterface* executorInterface) {
+	CliExecutor* executor = new CliExecutor(managedExecutorDriverId, *executorInterface);
 	CliExecutorDriver* driver = new CliExecutorDriver(executor);
 
 	return driver;
@@ -39,5 +41,6 @@ int mesosclr_ExecutorDriver_SendStatusUpdate(CliExecutorDriver *driver, ByteArra
 int mesosclr_ExecutorDriver_SendFrameworkMessage(CliExecutorDriver *driver, ByteArray* data) {
 	return 0; //TODO
 }
+
 }
 }

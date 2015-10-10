@@ -2,8 +2,9 @@
 
 namespace mesosclr {
 
-CliScheduler::CliScheduler(long managedSchedulerDriverId) {
+CliScheduler::CliScheduler(long managedSchedulerDriverId, ManagedSchedulerInterface schedulerInterface) {
 	_managedSchedulerDriverId = managedSchedulerDriverId;
+	_schedulerInterface = schedulerInterface;
 }
 
 }

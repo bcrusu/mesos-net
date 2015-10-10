@@ -1,12 +1,12 @@
-#include "Array.hpp"
-#include "ByteArray.hpp"
+#include "Common.hpp"
 #include "CliSchedulerDriver.hpp"
+#include "ManagedSchedulerInterface.hpp"
 
 namespace mesosclr {
 extern "C" {
-CliSchedulerDriver* mesosclr_SchedulerDriver_Initialize(long managedSchedulerDriverId, ByteArray* frameworkInfo, std::string* masterAddress,
-		bool implicitAcknowledgements, ByteArray* credential) {
-	//CliScheduler* scheduler = new CliScheduler(managedSchedulerDriverId);
+CliSchedulerDriver* mesosclr_SchedulerDriver_Initialize(long managedSchedulerDriverId, ManagedSchedulerInterface* schedulerInterface,
+		ByteArray* frameworkInfo, std::string* masterAddress, bool implicitAcknowledgements, ByteArray* credential) {
+	//CliScheduler* scheduler = new CliScheduler(managedSchedulerDriverId, *schedulerInterface);
 	//CliSchedulerDriver* driver = new CliSchedulerDriver(scheduler);
 	//return driver;
 

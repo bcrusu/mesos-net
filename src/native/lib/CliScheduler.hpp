@@ -2,6 +2,7 @@
 #define CLISCHEDULER_HPP_
 
 #include <mesos/scheduler.hpp>
+#include "ManagedSchedulerInterface.hpp"
 
 using namespace mesos;
 using std::string;
@@ -11,7 +12,7 @@ namespace mesosclr {
 
 class CliScheduler: public Scheduler {
 public:
-	CliScheduler(long managedSchedulerDriverId);
+	CliScheduler(long managedSchedulerDriverId, ManagedSchedulerInterface schedulerInterface);
 
 	virtual void registered(SchedulerDriver* driver, const FrameworkID& frameworkId, const MasterInfo& masterInfo);
 	virtual void reregistered(SchedulerDriver*, const MasterInfo& masterInfo);
@@ -26,6 +27,7 @@ public:
 
 private:
 	long _managedSchedulerDriverId;
+	ManagedSchedulerInterface _schedulerInterface;
 };
 
 }
