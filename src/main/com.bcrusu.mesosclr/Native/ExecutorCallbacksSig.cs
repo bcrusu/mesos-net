@@ -35,6 +35,6 @@ namespace com.bcrusu.mesosclr.Native
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         [SuppressUnmanagedCodeSecurity]
-        public delegate void Error(long managedDriverId, string message);
+		public delegate void Error(long managedDriverId, NativeArray* message);
     }
 }

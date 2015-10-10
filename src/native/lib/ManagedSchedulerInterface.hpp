@@ -14,19 +14,19 @@ typedef void Scheduler_FrameworkMessage(long managedDriverId, ByteArray* executo
 typedef void Scheduler_Disconnected(long managedDriverId);
 typedef void Scheduler_SlaveLost(long managedDriverId, ByteArray* slaveId);
 typedef void Scheduler_ExecutorLost(long managedDriverId, ByteArray* executorId, ByteArray* slaveId, int status);
-typedef void Scheduler_Error(long managedDriverId, char* message);
+typedef void Scheduler_Error(long managedDriverId, ByteArray* message);
 
 class ManagedSchedulerInterface {
-	Scheduler_Registered* Registered;
-	Scheduler_Reregistered* Reregistered;
-	Scheduler_ResourceOffers* ResourceOffers;
-	Scheduler_OfferRescinded* OfferRescinded;
-	Scheduler_StatusUpdate* StatusUpdate;
-	Scheduler_FrameworkMessage* FrameworkMessage;
-	Scheduler_Disconnected* Disconnected;
-	Scheduler_SlaveLost* SlaveLost;
-	Scheduler_ExecutorLost * ExecutorLost;
-	Scheduler_Error* Error;
+	Scheduler_Registered* registered;
+	Scheduler_Reregistered* reregistered;
+	Scheduler_ResourceOffers* resourceOffers;
+	Scheduler_OfferRescinded* offerRescinded;
+	Scheduler_StatusUpdate* statusUpdate;
+	Scheduler_FrameworkMessage* frameworkMessage;
+	Scheduler_Disconnected* disconnected;
+	Scheduler_SlaveLost* slaveLost;
+	Scheduler_ExecutorLost * executorLost;
+	Scheduler_Error* error;
 };
 
 }

@@ -12,18 +12,18 @@ typedef void Executor_LaunchTask(long managedDriverId, ByteArray* taskInfo);
 typedef void Executor_KillTask(long managedDriverId, ByteArray* taskId);
 typedef void Executor_FrameworkMessage(long managedDriverId, ByteArray* data);
 typedef void Executor_Shutdown(long managedDriverId);
-typedef void Executor_Error(long managedDriverId, char* message);
+typedef void Executor_Error(long managedDriverId, ByteArray* message);
 
 class ManagedExecutorInterface {
 public:
-	Executor_Registered* Registered;
-	Executor_Reregistered* Reregistered;
-	Executor_Disconnected* Disconnected;
-	Executor_LaunchTask* LaunchTask;
-	Executor_KillTask* KillTask;
-	Executor_FrameworkMessage* FrameworkMessage;
-	Executor_Shutdown* Shutdown;
-	Executor_Error* Error;
+	Executor_Registered* registered;
+	Executor_Reregistered* reregistered;
+	Executor_Disconnected* disconnected;
+	Executor_LaunchTask* launchTask;
+	Executor_KillTask* killTask;
+	Executor_FrameworkMessage* frameworkMessage;
+	Executor_Shutdown* shutdown;
+	Executor_Error* error;
 };
 
 }

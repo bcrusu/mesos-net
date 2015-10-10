@@ -89,10 +89,10 @@ namespace com.bcrusu.mesosclr.Native
                 (driver, executor) => executor.Shutdown(driver));
         }
 
-        private static void Error(long managedDriverId, string message)
+		private static void Error(long managedDriverId, NativeArray* message)
         {
             CallExecutor(managedDriverId,
-                (driver, executor) => executor.Error(driver, message));
+                (driver, executor) => executor.Error(driver, message)); //TODO: native array to string
         }
 
         private static void CallExecutor(long managedDriverId, Action<MesosExecutorDriver, IExecutor> action)
