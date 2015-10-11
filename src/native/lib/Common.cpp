@@ -1,4 +1,6 @@
 #include "Common.hpp"
+#include <mesos/mesos.hpp>
+#include <google/protobuf/io/zero_copy_stream_impl.h>
 
 namespace mesosclr {
 
@@ -42,6 +44,15 @@ Collection* SerializeVector(const std::vector<T>& items) {
 	result->Items = (void**) offerBytesArray;
 
 	return result;
+}
+
+template<class T>
+T Deserialize(ByteArray* bytes) {
+	google::protobuf::io::ArrayInputStream stream(bytes->Data, bytes->Size);
+	T t;
+	bool parsed = t.ParseFromZeroCopyStream(&stream);
+	assert(parsed);
+	return t;
 }
 
 }

@@ -19,27 +19,29 @@ void mesosclr_ExecutorDriver_Finalize(CliExecutorDriver *driver) {
 }
 
 int mesosclr_ExecutorDriver_Start(CliExecutorDriver *driver) {
-	return 0; //TODO
+	return driver->start();
 }
 
 int mesosclr_ExecutorDriver_Stop(CliExecutorDriver *driver) {
-	return 0; //TODO
+	return driver->stop();
 }
 
 int mesosclr_ExecutorDriver_Abort(CliExecutorDriver *driver) {
-	return 0; //TODO
+	return driver->abort();
 }
 
 int mesosclr_ExecutorDriver_Join(CliExecutorDriver *driver) {
-	return 0; //TODO
+	return driver->join();
 }
 
-int mesosclr_ExecutorDriver_SendStatusUpdate(CliExecutorDriver *driver, ByteArray* status) {
-	return 0; //TODO
+int mesosclr_ExecutorDriver_SendStatusUpdate(CliExecutorDriver *driver, ByteArray* taskStatusBytes) {
+	TaskStatus taskStatus = protobuf::Deserialize<TaskStatus>(taskStatusBytes);
+	return driver->sendStatusUpdate(taskStatus);
 }
 
 int mesosclr_ExecutorDriver_SendFrameworkMessage(CliExecutorDriver *driver, ByteArray* data) {
-	return 0; //TODO
+	std::string dataString(data->Data, data->Size);
+	return driver->sendFrameworkMessage(dataString);
 }
 
 }

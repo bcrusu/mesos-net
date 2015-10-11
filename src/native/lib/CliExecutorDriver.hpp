@@ -9,7 +9,7 @@ using namespace mesos;
 
 namespace mesosclr {
 
-class CliExecutorDriver: MesosExecutorDriver {
+class CliExecutorDriver: public MesosExecutorDriver {
 public:
 	CliExecutorDriver(CliExecutor* executor);
 	CliExecutor* getExecutor();
