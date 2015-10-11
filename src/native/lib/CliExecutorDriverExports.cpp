@@ -34,6 +34,10 @@ int mesosclr_ExecutorDriver_Join(CliExecutorDriver *driver) {
 	return driver->join();
 }
 
+int mesosclr_ExecutorDriver_Run(CliExecutorDriver *driver) {
+	return driver->run();
+}
+
 int mesosclr_ExecutorDriver_SendStatusUpdate(CliExecutorDriver *driver, ByteArray* taskStatusBytes) {
 	TaskStatus taskStatus = protobuf::Deserialize<TaskStatus>(taskStatusBytes);
 	return driver->sendStatusUpdate(taskStatus);

@@ -36,8 +36,7 @@ namespace com.bcrusu.mesosclr.Native
 
         public Status Run()
         {
-            var status = Start();
-            return status != Status.DRIVER_RUNNING ? status : Join();
+			return (Status)NativeImports.SchedulerDriver.Run(_nativeDriverPtr);
         }
 
         public Status RequestResources(IEnumerable<Request> requests)
@@ -57,29 +56,12 @@ namespace com.bcrusu.mesosclr.Native
             using (var pinnedOfferIdsArrays = MarshalHelper.CreatePinnedObject(offerIdsArrays))
             using (var pinnedTasksArrays = MarshalHelper.CreatePinnedObject(tasksArrays))
             using (var pinnedFiltersBytes = MarshalHelper.CreatePinnedObject(filtersBytes))
-                return (Status)NativeImports.SchedulerDriver.LaunchTasksForOffers(_nativeDriverPtr, pinnedOfferIdsArrays.Ptr, pinnedTasksArrays.Ptr, pinnedFiltersBytes.Ptr);
+                return (Status)NativeImports.SchedulerDriver.LaunchTasks(_nativeDriverPtr, pinnedOfferIdsArrays.Ptr, pinnedTasksArrays.Ptr, pinnedFiltersBytes.Ptr);
         }
 
         public Status LaunchTasks(IEnumerable<OfferID> offerIds, IEnumerable<TaskInfo> tasks)
         {
             return LaunchTasks(offerIds, tasks, new Filters());
-        }
-
-        public Status LaunchTasks(OfferID offerId, IEnumerable<TaskInfo> tasks, Filters filters)
-        {
-            var offerIdBytes = ProtoBufHelper.Serialize(offerId);
-            var tasksArrays = tasks.Select(ProtoBufHelper.Serialize);
-            var filtersBytes = ProtoBufHelper.Serialize(filters);
-
-            using (var pinnedOfferId = MarshalHelper.CreatePinnedObject(offerIdBytes))
-            using (var pinnedTasksArrays = MarshalHelper.CreatePinnedObject(tasksArrays))
-            using (var pinnedFiltersBytes = MarshalHelper.CreatePinnedObject(filtersBytes))
-                return (Status)NativeImports.SchedulerDriver.LaunchTasksForOffer(_nativeDriverPtr, pinnedOfferId.Ptr, pinnedTasksArrays.Ptr, pinnedFiltersBytes.Ptr);
-        }
-
-        public Status LaunchTasks(OfferID offerId, IEnumerable<TaskInfo> tasks)
-        {
-            return LaunchTasks(offerId, tasks, new Filters());
         }
 
         public Status KillTask(TaskID taskId)

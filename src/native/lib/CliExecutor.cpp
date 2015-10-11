@@ -10,9 +10,9 @@ CliExecutor::CliExecutor(long managedExecutorDriverId, ManagedExecutorInterface 
 
 void CliExecutor::registered(ExecutorDriver* driver, const ExecutorInfo& executorInfo, const FrameworkInfo& frameworkInfo,
 		const SlaveInfo& slaveInfo) {
-	ByteArray* executorInfoBytes = protobuf::SerializeToArray(executorInfo);
-	ByteArray* frameworkInfoBytes = protobuf::SerializeToArray(frameworkInfo);
-	ByteArray* slaveInfoBytes = protobuf::SerializeToArray(slaveInfo);
+	ByteArray* executorInfoBytes = protobuf::Serialize(executorInfo);
+	ByteArray* frameworkInfoBytes = protobuf::Serialize(frameworkInfo);
+	ByteArray* slaveInfoBytes = protobuf::Serialize(slaveInfo);
 
 	_executorInterface.registered(_managedExecutorDriverId, executorInfoBytes, frameworkInfoBytes, slaveInfoBytes);
 	delete executorInfoBytes;
@@ -21,7 +21,7 @@ void CliExecutor::registered(ExecutorDriver* driver, const ExecutorInfo& executo
 }
 
 void CliExecutor::reregistered(ExecutorDriver* driver, const SlaveInfo& slaveInfo) {
-	ByteArray* slaveInfoBytes = protobuf::SerializeToArray(slaveInfo);
+	ByteArray* slaveInfoBytes = protobuf::Serialize(slaveInfo);
 
 	_executorInterface.reregistered(_managedExecutorDriverId, slaveInfoBytes);
 	delete slaveInfoBytes;
@@ -32,14 +32,14 @@ void CliExecutor::disconnected(ExecutorDriver* driver) {
 }
 
 void CliExecutor::launchTask(ExecutorDriver* driver, const TaskInfo& task) {
-	ByteArray* taskBytes = protobuf::SerializeToArray(task);
+	ByteArray* taskBytes = protobuf::Serialize(task);
 
 	_executorInterface.launchTask(_managedExecutorDriverId, taskBytes);
 	delete taskBytes;
 }
 
 void CliExecutor::killTask(ExecutorDriver* driver, const TaskID& taskId) {
-	ByteArray* taskIdBytes = protobuf::SerializeToArray(taskId);
+	ByteArray* taskIdBytes = protobuf::Serialize(taskId);
 
 	_executorInterface.killTask(_managedExecutorDriverId, taskIdBytes);
 	delete taskIdBytes;

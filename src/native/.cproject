@@ -36,6 +36,7 @@
 								<option id="gnu.cpp.compiler.so.debug.option.debugging.level.2101836514" name="Debug Level" superClass="gnu.cpp.compiler.so.debug.option.debugging.level" value="gnu.cpp.compiler.debugging.level.max" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.option.include.paths.1068211481" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
 									<listOptionValue builtIn="false" value="/home/bcrusu/work/github/mesos/build/3rdparty/libprocess/3rdparty/protobuf-2.5.0/src/"/>
+									<listOptionValue builtIn="false" value="/home/bcrusu/work/github/mesos/include"/>
 									<listOptionValue builtIn="false" value="/home/bcrusu/work/github/mesos/build/include"/>
 									<listOptionValue builtIn="false" value="/home/bcrusu/work/github/mesos/build/3rdparty/libprocess/3rdparty/glog-0.3.3/src/"/>
 									<listOptionValue builtIn="false" value="/home/bcrusu/work/github/mesos/3rdparty/libprocess/include/"/>
@@ -170,4 +171,5 @@
 		</configuration>
 	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
+	<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets"/>
 </cproject>

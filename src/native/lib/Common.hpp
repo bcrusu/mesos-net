@@ -23,13 +23,16 @@ ByteArray StringToByteArray(std::string string);
 
 namespace protobuf {
 
-ByteArray* SerializeToArray(const google::protobuf::Message& message);
+ByteArray* Serialize(const google::protobuf::Message& message);
 
 template<class T>
 Collection* SerializeVector(const std::vector<T>& items);
 
 template<class T>
 T Deserialize(ByteArray* bytes);
+
+template<class T>
+std::vector<T> DeserializeVector(Collection* collection);
 
 }
 

@@ -29,9 +29,7 @@ namespace com.bcrusu.mesosclr.Native
 
         public Status Run()
         {
-            var status = Start();
-            status = status != Status.DRIVER_RUNNING ? status : Join();
-            return status;
+			return (Status)NativeImports.ExecutorDriver.Run(_nativeDriverPtr);
         }
 
         public Status SendStatusUpdate(TaskStatus status)

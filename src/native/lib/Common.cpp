@@ -17,7 +17,7 @@ ByteArray StringToByteArray(const std::string& str) {
 
 namespace protobuf {
 
-ByteArray* SerializeToArray(const google::protobuf::Message& message) {
+ByteArray* Serialize(const google::protobuf::Message& message) {
 	int size = message.ByteSize();
 	char *buffer = new char[size];
 
@@ -39,7 +39,7 @@ Collection* SerializeVector(const std::vector<T>& items) {
 
 	for (vector_size_type i = 0; i < items.size(); i++) {
 		T item = items[i];
-		offerBytesArray[i] = SerializeToArray(item);
+		offerBytesArray[i] = Serialize(item);
 	}
 	result->Items = (void**) offerBytesArray;
 
@@ -53,6 +53,21 @@ T Deserialize(ByteArray* bytes) {
 	bool parsed = t.ParseFromZeroCopyStream(&stream);
 	assert(parsed);
 	return t;
+}
+
+template<class T>
+std::vector<T> DeserializeVector(Collection* collection) {
+	int size = collection->Size;
+	ByteArray** items = (ByteArray**) collection->Items;
+
+	std::vector<T> result = new std::vector<T>(size);
+	for (int i = 0; i < size; i++) {
+		ByteArray* itemBytes = items[i];
+		T item = Deserialize<T>(itemBytes);
+		result.push_back(item);
+	}
+
+	return result;
 }
 
 }

@@ -9,7 +9,7 @@ using namespace mesos;
 
 namespace mesosclr {
 
-class CliSchedulerDriver: MesosSchedulerDriver {
+class CliSchedulerDriver: public MesosSchedulerDriver {
 public:
 	CliSchedulerDriver(CliScheduler* scheduler, const FrameworkInfo& framework, const std::string& master, bool implicitAcknowledgements);
 	CliSchedulerDriver(CliScheduler* scheduler, const FrameworkInfo& framework, const std::string& master, bool implicitAcknowledgements,

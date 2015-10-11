@@ -91,16 +91,6 @@ namespace com.bcrusu.mesosclr
             return _bridge.LaunchTasks(offerIds, tasks);
         }
 
-        public Status LaunchTasks(OfferID offerId, IEnumerable<TaskInfo> tasks, Filters filters)
-        {
-            return _bridge.LaunchTasks(offerId, tasks, filters);
-        }
-
-        public Status LaunchTasks(OfferID offerId, IEnumerable<TaskInfo> tasks)
-        {
-            return _bridge.LaunchTasks(offerId, tasks);
-        }
-
         public Status KillTask(TaskID taskId)
         {
             return _bridge.KillTask(taskId);

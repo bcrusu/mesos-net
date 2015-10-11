@@ -23,10 +23,6 @@ namespace com.bcrusu.mesosclr
 
         Status LaunchTasks(IEnumerable<OfferID> offerIds, IEnumerable<TaskInfo> tasks);
 
-        Status LaunchTasks(OfferID offerId, IEnumerable<TaskInfo> tasks, Filters filters);
-
-        Status LaunchTasks(OfferID offerId, IEnumerable<TaskInfo> tasks);
-
         Status KillTask(TaskID taskId);
 
         Status AcceptOffers(IEnumerable<OfferID> offerIds, IEnumerable<Offer.Operation> operations, Filters filters);
