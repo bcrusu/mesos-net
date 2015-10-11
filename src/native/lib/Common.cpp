@@ -1,11 +1,39 @@
 #include "Common.hpp"
-#include <mesos/mesos.hpp>
 #include <google/protobuf/io/zero_copy_stream_impl.h>
 
 namespace mesosclr {
 
-ByteArray::~ByteArray() {
-	delete[] Data;
+ScopedByteArray::ScopedByteArray(ByteArray* byteArray) {
+	_byteArray = byteArray;
+}
+
+ScopedByteArray::~ScopedByteArray() {
+	delete[] _byteArray->Data;
+	delete _byteArray;
+}
+
+ByteArray* ScopedByteArray::Ptr() {
+	return _byteArray;
+}
+
+ScopedByteArrayCollection::ScopedByteArrayCollection(ByteArrayCollection* byteArrayCollection) {
+	_byteArrayCollection = byteArrayCollection;
+}
+
+ScopedByteArrayCollection::~ScopedByteArrayCollection() {
+	int size = _byteArrayCollection->Size;
+	ByteArray** items = _byteArrayCollection->Items;
+	for (int i = 0; i < size; i++) {
+		ByteArray* item = items[i];
+		delete[] item->Data;
+		delete item;
+	}
+
+	delete _byteArrayCollection;
+}
+
+ByteArrayCollection* ScopedByteArrayCollection::Ptr() {
+	return _byteArrayCollection;
 }
 
 ByteArray StringToByteArray(const std::string& str) {
@@ -17,52 +45,54 @@ ByteArray StringToByteArray(const std::string& str) {
 
 namespace protobuf {
 
-ByteArray* Serialize(const google::protobuf::Message& message) {
+ScopedByteArray Serialize(const google::protobuf::Message& message) {
 	int size = message.ByteSize();
 	char *buffer = new char[size];
 
 	message.SerializeToArray(buffer, size);
 
-	ByteArray* result = new ByteArray;
-	result->Size = size;
-	result->Data = buffer;
+	ByteArray* byteArray = new ByteArray;
+	byteArray->Size = size;
+	byteArray->Data = buffer;
+
+	ScopedByteArray result(byteArray);
 	return result;
 }
 
 template<class T>
-Collection* SerializeVector(const std::vector<T>& items) {
+ScopedByteArrayCollection SerializeVector(const std::vector<T>& vector) {
 	typedef typename std::vector<T>::size_type vector_size_type;
 
-	Collection* result = new Collection;
-	result->Size = items.size();
-	ByteArray** offerBytesArray = new ByteArray*[items.size()];
+	ByteArrayCollection* collection = new ByteArrayCollection;
+	collection->Size = vector.size();
+	ByteArray** items = new ByteArray*[vector.size()];
 
-	for (vector_size_type i = 0; i < items.size(); i++) {
-		T item = items[i];
-		offerBytesArray[i] = Serialize(item);
-	}
-	result->Items = (void**) offerBytesArray;
+	for (vector_size_type i = 0; i < vector.size(); i++)
+		items[i] = Serialize(vector[i]);
 
+	collection->Items = items;
+
+	ScopedByteArrayCollection result(collection);
 	return result;
 }
 
 template<class T>
 T Deserialize(ByteArray* bytes) {
 	google::protobuf::io::ArrayInputStream stream(bytes->Data, bytes->Size);
-	T t;
-	bool parsed = t.ParseFromZeroCopyStream(&stream);
+	T result;
+	bool parsed = result.ParseFromZeroCopyStream(&stream);
 	assert(parsed);
-	return t;
+	return result;
 }
 
 template<class T>
-std::vector<T> DeserializeVector(Collection* collection) {
+std::vector<T> DeserializeVector(ByteArrayCollection* collection) {
 	int size = collection->Size;
-	ByteArray** items = (ByteArray**) collection->Items;
+	ScopedByteArray** items = (ScopedByteArray**) collection->Items;
 
 	std::vector<T> result = new std::vector<T>(size);
 	for (int i = 0; i < size; i++) {
-		ByteArray* itemBytes = items[i];
+		ScopedByteArray* itemBytes = items[i];
 		T item = Deserialize<T>(itemBytes);
 		result.push_back(item);
 	}

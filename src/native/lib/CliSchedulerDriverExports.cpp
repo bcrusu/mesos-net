@@ -6,7 +6,8 @@ namespace mesosclr {
 extern "C" {
 
 CliSchedulerDriver* mesosclr_SchedulerDriver_Initialize(long managedSchedulerDriverId, ManagedSchedulerInterface* schedulerInterface,
-		ByteArray* frameworkInfoBytes, ByteArray* masterAddressBytes, bool implicitAcknowledgements, ByteArray* credentialBytes) {
+		ByteArray* frameworkInfoBytes, ByteArray* masterAddressBytes, bool implicitAcknowledgements,
+		ByteArray* credentialBytes) {
 	FrameworkInfo frameworkInfo = protobuf::Deserialize<FrameworkInfo>(frameworkInfoBytes);
 	std::string masterAddress(masterAddressBytes->Data, masterAddressBytes->Size);
 	Credential credential = protobuf::Deserialize<Credential>(credentialBytes);
@@ -50,12 +51,13 @@ int mesosclr_SchedulerDriver_Run(CliSchedulerDriver *driver) {
 	return driver->run();
 }
 
-int mesosclr_SchedulerDriver_RequestResources(CliSchedulerDriver *driver, Collection* requests) {
+int mesosclr_SchedulerDriver_RequestResources(CliSchedulerDriver *driver, ByteArrayCollection* requests) {
 	std::vector<Request> requestsVector = protobuf::DeserializeVector<Request>(requests);
 	return driver->requestResources(requestsVector);
 }
 
-int mesosclr_SchedulerDriver_LaunchTasks(CliSchedulerDriver *driver, Collection* offerIds, Collection* tasks, ByteArray* filtersBytes) {
+int mesosclr_SchedulerDriver_LaunchTasks(CliSchedulerDriver *driver, ByteArrayCollection* offerIds, ByteArrayCollection* tasks,
+		ByteArray* filtersBytes) {
 	std::vector<OfferID> offerIdsVector = protobuf::DeserializeVector<OfferID>(offerIds);
 	std::vector<TaskInfo> tasksVector = protobuf::DeserializeVector<TaskInfo>(tasks);
 	Filters filters = protobuf::Deserialize<Filters>(filtersBytes);
@@ -67,7 +69,8 @@ int mesosclr_SchedulerDriver_KillTask(CliSchedulerDriver *driver, ByteArray* tas
 	return driver->killTask(taskId);
 }
 
-int mesosclr_SchedulerDriver_AcceptOffers(CliSchedulerDriver *driver, Collection* offerIds, Collection* operations, ByteArray* filtersBytes) {
+int mesosclr_SchedulerDriver_AcceptOffers(CliSchedulerDriver *driver, ByteArrayCollection* offerIds, ByteArrayCollection* operations,
+		ByteArray* filtersBytes) {
 	std::vector<OfferID> offerIdsVector = protobuf::DeserializeVector<OfferID>(offerIds);
 	std::vector<Offer::Operation> operationsVector = protobuf::DeserializeVector<Offer::Operation>(operations);
 	Filters filters = protobuf::Deserialize<Filters>(filtersBytes);
@@ -101,7 +104,7 @@ int mesosclr_SchedulerDriver_SendFrameworkMessage(CliSchedulerDriver *driver, By
 	return driver->sendFrameworkMessage(executorId, slaveId, data);
 }
 
-int mesosclr_SchedulerDriver_ReconcileTasks(CliSchedulerDriver *driver, Collection* statuses) {
+int mesosclr_SchedulerDriver_ReconcileTasks(CliSchedulerDriver *driver, ByteArrayCollection* statuses) {
 	std::vector<TaskStatus> statusesVector = protobuf::DeserializeVector<TaskStatus>(statuses);
 	return driver->reconcileTasks(statusesVector);
 }

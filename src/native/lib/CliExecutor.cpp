@@ -10,21 +10,15 @@ CliExecutor::CliExecutor(long managedExecutorDriverId, ManagedExecutorInterface 
 
 void CliExecutor::registered(ExecutorDriver* driver, const ExecutorInfo& executorInfo, const FrameworkInfo& frameworkInfo,
 		const SlaveInfo& slaveInfo) {
-	ByteArray* executorInfoBytes = protobuf::Serialize(executorInfo);
-	ByteArray* frameworkInfoBytes = protobuf::Serialize(frameworkInfo);
-	ByteArray* slaveInfoBytes = protobuf::Serialize(slaveInfo);
-
-	_executorInterface.registered(_managedExecutorDriverId, executorInfoBytes, frameworkInfoBytes, slaveInfoBytes);
-	delete executorInfoBytes;
-	delete frameworkInfoBytes;
-	delete slaveInfoBytes;
+	ScopedByteArray executorInfoBytes = protobuf::Serialize(executorInfo);
+	ScopedByteArray frameworkInfoBytes = protobuf::Serialize(frameworkInfo);
+	ScopedByteArray slaveInfoBytes = protobuf::Serialize(slaveInfo);
+	_executorInterface.registered(_managedExecutorDriverId, executorInfoBytes.Ptr(), frameworkInfoBytes.Ptr(), slaveInfoBytes.Ptr());
 }
 
 void CliExecutor::reregistered(ExecutorDriver* driver, const SlaveInfo& slaveInfo) {
-	ByteArray* slaveInfoBytes = protobuf::Serialize(slaveInfo);
-
-	_executorInterface.reregistered(_managedExecutorDriverId, slaveInfoBytes);
-	delete slaveInfoBytes;
+	ScopedByteArray slaveInfoBytes = protobuf::Serialize(slaveInfo);
+	_executorInterface.reregistered(_managedExecutorDriverId, slaveInfoBytes.Ptr());
 }
 
 void CliExecutor::disconnected(ExecutorDriver* driver) {
@@ -32,17 +26,13 @@ void CliExecutor::disconnected(ExecutorDriver* driver) {
 }
 
 void CliExecutor::launchTask(ExecutorDriver* driver, const TaskInfo& task) {
-	ByteArray* taskBytes = protobuf::Serialize(task);
-
-	_executorInterface.launchTask(_managedExecutorDriverId, taskBytes);
-	delete taskBytes;
+	ScopedByteArray taskBytes = protobuf::Serialize(task);
+	_executorInterface.launchTask(_managedExecutorDriverId, taskBytes.Ptr());
 }
 
 void CliExecutor::killTask(ExecutorDriver* driver, const TaskID& taskId) {
-	ByteArray* taskIdBytes = protobuf::Serialize(taskId);
-
-	_executorInterface.killTask(_managedExecutorDriverId, taskIdBytes);
-	delete taskIdBytes;
+	ScopedByteArray taskIdBytes = protobuf::Serialize(taskId);
+	_executorInterface.killTask(_managedExecutorDriverId, taskIdBytes.Ptr());
 
 }
 
