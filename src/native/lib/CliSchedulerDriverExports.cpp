@@ -33,15 +33,15 @@ int mesosclr_SchedulerDriver_Join(CliSchedulerDriver *driver) {
 	return 0; //TODO
 }
 
-int mesosclr_SchedulerDriver_RequestResources(CliSchedulerDriver *driver, Array* requests) {
+int mesosclr_SchedulerDriver_RequestResources(CliSchedulerDriver *driver, Collection* requests) {
 	return 0; //TODO
 }
 
-int mesosclr_SchedulerDriver_LaunchTasksForOffer(CliSchedulerDriver *driver, ByteArray* offerId, Array tasks, ByteArray* filters) {
+int mesosclr_SchedulerDriver_LaunchTasksForOffer(CliSchedulerDriver *driver, ByteArray* offerId, Collection tasks, ByteArray* filters) {
 	return 0; //TODO
 }
 
-int mesosclr_SchedulerDriver_LaunchTasksForOffers(CliSchedulerDriver *driver, Array* offerIds, Array tasks, ByteArray* filters) {
+int mesosclr_SchedulerDriver_LaunchTasksForOffers(CliSchedulerDriver *driver, Collection* offerIds, Collection tasks, ByteArray* filters) {
 	return 0; //TODO
 }
 
@@ -49,7 +49,7 @@ int mesosclr_SchedulerDriver_KillTask(CliSchedulerDriver *driver, ByteArray* tas
 	return 0; //TODO
 }
 
-int mesosclr_SchedulerDriver_AcceptOffers(CliSchedulerDriver *driver, Array* offerIds, Array* operations, ByteArray* filters) {
+int mesosclr_SchedulerDriver_AcceptOffers(CliSchedulerDriver *driver, Collection* offerIds, Collection* operations, ByteArray* filters) {
 	return 0; //TODO
 }
 
@@ -73,7 +73,7 @@ int mesosclr_SchedulerDriver_SendFrameworkMessage(CliSchedulerDriver *driver, By
 	return 0; //TODO
 }
 
-int mesosclr_SchedulerDriver_ReconcileTasks(CliSchedulerDriver *driver, Array* statuses) {
+int mesosclr_SchedulerDriver_ReconcileTasks(CliSchedulerDriver *driver, Collection* statuses) {
 	return 0; //TODO
 }
 }

@@ -7,7 +7,7 @@ namespace mesosclr {
 
 typedef void Scheduler_Registered(long managedDriverId, ByteArray* frameworkId, ByteArray* masterInfo);
 typedef void Scheduler_Reregistered(long managedDriverId, ByteArray* masterInfo);
-typedef void Scheduler_ResourceOffers(long managedDriverId, ByteArray* offers);
+typedef void Scheduler_ResourceOffers(long managedDriverId, Collection* offers);
 typedef void Scheduler_OfferRescinded(long managedDriverId, ByteArray* offerId);
 typedef void Scheduler_StatusUpdate(long managedDriverId, ByteArray* status);
 typedef void Scheduler_FrameworkMessage(long managedDriverId, ByteArray* executorId, ByteArray* slaveId, ByteArray* data);
@@ -17,6 +17,7 @@ typedef void Scheduler_ExecutorLost(long managedDriverId, ByteArray* executorId,
 typedef void Scheduler_Error(long managedDriverId, ByteArray* message);
 
 class ManagedSchedulerInterface {
+public:
 	Scheduler_Registered* registered;
 	Scheduler_Reregistered* reregistered;
 	Scheduler_ResourceOffers* resourceOffers;

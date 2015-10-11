@@ -5,10 +5,10 @@
 
 namespace mesosclr {
 
-class Array {
+class Collection {
 public:
-	int Length;
-	void *Items;
+	int Size;
+	void **Items;
 };
 
 class ByteArray {
@@ -24,6 +24,9 @@ ByteArray StringToByteArray(std::string string);
 namespace protobuf {
 
 ByteArray* SerializeToArray(const google::protobuf::Message& message);
+
+template<class T>
+Collection* SerializeVector(const std::vector<T>& items);
 
 }
 
