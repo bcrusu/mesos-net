@@ -1,57 +1,88 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using com.bcrusu.mesosclr.Rendler.Executors.Messages;
 using mesos;
 
 namespace com.bcrusu.mesosclr.Rendler.Executors
 {
-    internal class CrawlExecutor : IExecutor
+    internal class CrawlExecutor : ExecutorBase
     {
-        public void Registered(IExecutorDriver driver, ExecutorInfo executorInfo, FrameworkInfo frameworkInfo, SlaveInfo slaveInfo)
+        private static readonly Regex ExtractLinksRegex = new Regex("<a[^>]+href=[\"']?(?<link>[^\"'>]+)[\"']?[^>]*>(.+?)</a>", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+        public override void Registered(IExecutorDriver driver, ExecutorInfo executorInfo, FrameworkInfo frameworkInfo, SlaveInfo slaveInfo)
         {
-            Console.WriteLine("Registered executor on " + slaveInfo.hostname);
+            Console.WriteLine($"Registered executor on '{slaveInfo.hostname}'.");
         }
 
-        public void Reregistered(IExecutorDriver driver, SlaveInfo slaveInfo)
+        public override void LaunchTask(IExecutorDriver driver, TaskInfo taskInfo)
         {
+            Console.WriteLine($"Launching crawl task '{taskInfo.task_id}'...");
+            Task.Factory.StartNew(() => RunTask(driver, taskInfo));
         }
 
-        public void Disconnected(IExecutorDriver driver)
+        private static void RunTask(IExecutorDriver driver, TaskInfo taskInfo)
         {
-        }
+            driver.SendTaskRunningStatus(taskInfo.task_id);
 
-        public void LaunchTask(IExecutorDriver driver, TaskInfo taskInfo)
-        {
-            driver.SendStatusUpdate(new TaskStatus
+            var url = Encoding.UTF8.GetString(taskInfo.data);
+
+            var htmlContent = GetUrlContent(url);
+            if (htmlContent != null)
             {
-                task_id = taskInfo.task_id,
-                state = TaskState.TASK_RUNNING
-            });
+                var links = ExtractLinks(htmlContent);
+                links = links.Distinct(StringComparer.CurrentCultureIgnoreCase);
 
+                SendCrawlResultMessage(driver, links.ToArray());
+            }
 
-            driver.SendStatusUpdate(new TaskStatus
+            driver.SendTaskFinishedStatus(taskInfo.task_id);
+        }
+
+        private static IEnumerable<string> ExtractLinks(string htmlContent)
+        {
+            var match = ExtractLinksRegex.Match(htmlContent);
+            while (match.Success)
             {
-                task_id = taskInfo.task_id,
-                state = TaskState.TASK_FINISHED
-            });
+                yield return match.Groups["link"].Value.Trim();
+                match = match.NextMatch();
+            }
         }
 
-        public void KillTask(IExecutorDriver driver, TaskID taskId)
+        private static string GetUrlContent(string url)
         {
-            throw new NotImplementedException();
+            using (var client = new WebClient())
+            {
+                client.Headers.Add("X-PoweredBy: minions");
+
+                try
+                {
+                    return client.DownloadString(url);
+                }
+                catch (WebException e)
+                {
+                    Console.WriteLine($"Error fetching url '{url}'; Error: {e}");
+                    return null;
+                }
+            }
         }
 
-        public void FrameworkMessage(IExecutorDriver driver, byte[] data)
+        private static void SendCrawlResultMessage(IExecutorDriver driver, string[] links)
         {
-            throw new NotImplementedException();
-        }
+            var message = new Message
+            {
+                Type = "CrawlResult",
+                Body = JsonHelper.Serialize(new CrawlResultMessage
+                {
+                    Links = links
+                })
+            };
 
-        public void Shutdown(IExecutorDriver driver)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Error(IExecutorDriver driver, string message)
-        {
-            throw new NotImplementedException();
+            driver.SendFrameworkMessage(JsonHelper.Serialize(message));
         }
     }
 }

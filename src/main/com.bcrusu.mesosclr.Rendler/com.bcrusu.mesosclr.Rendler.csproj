@@ -36,13 +36,19 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml" />
     <Reference Include="protobuf-net, Version=2.0.0.668, Culture=neutral, PublicKeyToken=257b51d87d2e4d67">
       <HintPath>..\packages\protobuf-net.2.0.0.668\lib\net40\protobuf-net.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Executors\ExecutorMessage.cs" />
+    <Compile Include="Executors\ExecutorBase.cs" />
+    <Compile Include="Executors\ExecutorHelper.cs" />
+    <Compile Include="Executors\Messages\Message.cs" />
+    <Compile Include="Executors\Messages\CrawlResultMessage.cs" />
+    <Compile Include="Executors\Messages\RenderResultMessage.cs" />
+    <Compile Include="JsonHelper.cs" />
     <Compile Include="RendlerScheduler.cs" />
     <Compile Include="Executors\CrawlExecutor.cs" />
     <Compile Include="ProgramArguments.cs" />
@@ -52,8 +58,10 @@
     <Compile Include="RunMode.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
     <None Include="packages.config" />
+    <None Include="render.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\com.bcrusu.mesosclr\com.bcrusu.mesosclr.csproj">

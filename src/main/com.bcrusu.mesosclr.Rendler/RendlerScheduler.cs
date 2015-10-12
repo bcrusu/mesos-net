@@ -2,9 +2,8 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Principal;
 using System.Text;
-using com.bcrusu.mesosclr.Rendler.Executors;
+using com.bcrusu.mesosclr.Rendler.Executors.Messages;
 using mesos;
 
 namespace com.bcrusu.mesosclr.Rendler
@@ -85,6 +84,21 @@ namespace com.bcrusu.mesosclr.Rendler
 
         public void FrameworkMessage(ISchedulerDriver driver, ExecutorID executorId, SlaveID slaveId, byte[] data)
         {
+            var message = JsonHelper.Deserialize<Message>(data);
+            switch (message.Type)
+            {
+                case "CrawlResult":
+                    var crawlResultMessage = JsonHelper.Deserialize<CrawlResultMessage>(message.Body);
+                    Console.WriteLine(message.Body); //TODO
+                    break;
+                case "RenderResult":
+                    var renderResultMessage = JsonHelper.Deserialize<RenderResultMessage>(message.Body);
+                    Console.WriteLine(message.Body); //TODO
+                    break;
+                default:
+                    Console.WriteLine($"Unrecognized message type: '{message.Type}'");
+                    break;
+            }
         }
 
         public void Disconnected(ISchedulerDriver driver)
@@ -101,6 +115,7 @@ namespace com.bcrusu.mesosclr.Rendler
 
         public void Error(ISchedulerDriver driver, string message)
         {
+            Console.WriteLine($"Error: '{message}'.");
         }
 
         private TaskInfo GetRenderTaskInfo(Offer offer, int uniqueId, string url)

@@ -1,61 +1,56 @@
 ﻿using System;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using com.bcrusu.mesosclr.Rendler.Executors.Messages;
 using mesos;
 
 namespace com.bcrusu.mesosclr.Rendler.Executors
 {
-    class RenderExecutor : IExecutor
+    class RenderExecutor : ExecutorBase
     {
         private string _outputDir;
 
-        public void Registered(IExecutorDriver driver, ExecutorInfo executorInfo, FrameworkInfo frameworkInfo, SlaveInfo slaveInfo)
+        public override void Registered(IExecutorDriver driver, ExecutorInfo executorInfo, FrameworkInfo frameworkInfo, SlaveInfo slaveInfo)
         {
             Console.WriteLine("Registered executor on " + slaveInfo.hostname);
             _outputDir = Encoding.UTF8.GetString(executorInfo.data);
         }
 
-        public void Reregistered(IExecutorDriver driver, SlaveInfo slaveInfo)
+        public override void LaunchTask(IExecutorDriver driver, TaskInfo taskInfo)
         {
+            Console.WriteLine($"Launching render task '{taskInfo.task_id}'...");
+            Task.Factory.StartNew(() => RunTask(driver, taskInfo));
         }
 
-        public void Disconnected(IExecutorDriver driver)
+        private static void RunTask(IExecutorDriver driver, TaskInfo taskInfo)
         {
-        }
-
-        public void LaunchTask(IExecutorDriver driver, TaskInfo taskInfo)
-        {
-            driver.SendStatusUpdate(new TaskStatus
-            {
-                task_id = taskInfo.task_id,
-                state = TaskState.TASK_RUNNING
-            });
+            driver.SendTaskRunningStatus(taskInfo.task_id);
 
             var url = Encoding.UTF8.GetString(taskInfo.data);
+            var fileName = "todo";
 
             //TODO: run phantomjs
             //TODO: send success status
+            Thread.Sleep(5000);
 
-            driver.SendStatusUpdate(new TaskStatus
+            SendRenderResultMessage(driver, url, fileName);
+            driver.SendTaskFinishedStatus(taskInfo.task_id);
+        }
+
+        private static void SendRenderResultMessage(IExecutorDriver driver, string url, string fileName)
+        {
+            var message = new Message
             {
-                task_id = taskInfo.task_id,
-                state = TaskState.TASK_FINISHED
-            });
-        }
+                Type = "RenderResult",
+                Body = JsonHelper.Serialize(new RenderResultMessage
+                {
+                    Url = url,
+                    FileName = fileName
+                })
+            };
 
-        public void KillTask(IExecutorDriver driver, TaskID taskId)
-        {
-        }
-
-        public void FrameworkMessage(IExecutorDriver driver, byte[] data)
-        {
-        }
-
-        public void Shutdown(IExecutorDriver driver)
-        {
-        }
-
-        public void Error(IExecutorDriver driver, string message)
-        {
+            driver.SendFrameworkMessage(JsonHelper.Serialize(message));
         }
     }
 }
