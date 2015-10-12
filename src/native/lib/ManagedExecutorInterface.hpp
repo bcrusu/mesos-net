@@ -12,7 +12,7 @@ typedef void Executor_LaunchTask(long managedDriverId, ByteArray* taskInfo);
 typedef void Executor_KillTask(long managedDriverId, ByteArray* taskId);
 typedef void Executor_FrameworkMessage(long managedDriverId, ByteArray* data);
 typedef void Executor_Shutdown(long managedDriverId);
-typedef void Executor_Error(long managedDriverId, ByteArray* message);
+typedef void Executor_Error(long managedDriverId, const char* message);
 
 class ManagedExecutorInterface {
 public:

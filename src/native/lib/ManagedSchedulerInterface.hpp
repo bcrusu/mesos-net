@@ -14,7 +14,7 @@ typedef void Scheduler_FrameworkMessage(long managedDriverId, ByteArray* executo
 typedef void Scheduler_Disconnected(long managedDriverId);
 typedef void Scheduler_SlaveLost(long managedDriverId, ByteArray* slaveId);
 typedef void Scheduler_ExecutorLost(long managedDriverId, ByteArray* executorId, ByteArray* slaveId, int status);
-typedef void Scheduler_Error(long managedDriverId, ByteArray* message);
+typedef void Scheduler_Error(long managedDriverId, const char* message);
 
 class ManagedSchedulerInterface {
 public:
