@@ -1,48 +1,80 @@
 #!/bin/bash
 
-SCRIPTDIR=$(cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-CLUSTERDIR=${SCRIPTDIR}/cluster_work_dir
+SCRIPTDIR=$(cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd)
 
-APPDIR=${SCRIPTDIR}/../src/main/com.bcrusu.mesosclr.Rendler/bin/Debug/
-SOPATH=${SCRIPTDIR}/../src/native/Debug/libmesosclr.so
+WORKDIR=${SCRIPTDIR}/work
+APPWORKDIR=${WORKDIR}/rendler
+
+APPBUILDDIR=${SCRIPTDIR}/../src/main/com.bcrusu.mesosclr.Rendler/bin/Debug
+SOBUILDPATH=${SCRIPTDIR}/../src/native/Debug/libmesosclr.so
 
 copy_files() {
-	if [ ! -f "$SOPATH" ]; then
-		echo "Could not find SO: $SOPATH..."
+	if [ ! -f "$SOBUILDPATH" ]; then
+		echo "Could not find libmesosclr.so: $SOBUILDPATH..."
 		exit 1
 	fi
 
-	if [ ! -f "$APPDIR/rendler.exe" ]; then
-		echo "Could not find rendler: $APPDIR/rendler.exe..."
+	if [ ! -f "$APPBUILDDIR/rendler.exe" ]; then
+		echo "Could not find rendler.exe : $APPBUILDDIR/rendler.exe..."
 		exit 1
 	fi
 
-	if [ ! -d "$CLUSTERDIR" ]; then
-		echo "Creating cluster work dir at: $CLUSTERDIR..."
-		mkdir "$CLUSTERDIR"
+	if [ ! -d "$WORKDIR" ]; then
+		echo "Creating cluster work dir: $WORKDIR..."
+		mkdir "$WORKDIR"
 	fi
 
-	cp -u $APPDIR/* $CLUSTERDIR
-	cp -u $SOPATH   $CLUSTERDIR
+	if [ ! -d "$APPWORKDIR" ]; then
+		echo "Creating rendler work dir: $APPWORKDIR..."
+		mkdir "$APPWORKDIR"
+	fi
+
+	cp -u $APPBUILDDIR/* $APPWORKDIR
+	cp -u $SOBUILDPATH   $APPWORKDIR
 }
 
 start_cluster() {
 	copy_files
 
-	#TODO:
-#mesos-master --cluster=mesosclr --allocation_interval=1secs --port=5050 --registry=in_memory --quorum=1 --quiet --log_dir=/cluster/master/logs --work_dir=/cluster/master/data
-#mesos-slave --master=127.0.0.33:5050 --port=5051 --resources=cpus:2;mem:512 --attributes=name:slave1 --quiet --frameworks_home=/cluster --log_dir=/cluster/slave1/logs --work_dir=/cluster/slave1/data
+	export LD_LIBRARY_PATH=/usr/local/lib:${APPWORKDIR}:${LD_LIBRARY_PATH}
+
+	mesos-master --cluster=mesosclr --ip=127.0.0.50 --port=5050 --allocation_interval=1secs --registry=in_memory --quorum=1 --quiet \
+		--log_dir=${WORKDIR}/master/logs --work_dir=${WORKDIR}/master/data &
+
+	sleep 0.3s
+
+	mesos-slave --master=127.0.0.50:5050 --ip=127.0.0.51 --port=5051 --resources="cpus:2;mem:512" --attributes=name:slave1 --quiet \
+		--frameworks_home=${WORKDIR} --log_dir=${WORKDIR}/slave1/logs --work_dir=${WORKDIR}/slave1/data &
+
+	sleep 0.1s
+
+	mesos-slave --master=127.0.0.50:5050 --ip=127.0.0.52 --port=5052 --resources="cpus:2;mem:512" --attributes=name:slave2 --quiet \
+		--frameworks_home=${WORKDIR} --log_dir=${WORKDIR}/slave2/logs --work_dir=${WORKDIR}/slave2/data &
+
+	sleep 0.1s
+
+	mesos-slave --master=127.0.0.50:5050 --ip=127.0.0.53 --port=5053 --resources="cpus:2;mem:512" --attributes=name:slave3 --quiet \
+		--frameworks_home=${WORKDIR} --log_dir=${WORKDIR}/slave3/logs --work_dir=${WORKDIR}/slave3/data &
 }
 
 stop_cluster() {
-	#TODO ps | grep | kill
+	killall -q mesos-slave
+	killall -q mesos-master
+	#TODO: kill rendler executors
 }
 
-clean_cluster_dir() {			
-	echo "Removing cluster work dir at: $CLUSTERDIR..."
-	sudo rm -rf "$CLUSTERDIR"
+clean_cluster_dir() {
+	echo "Removing cluster work dir at: $WORKDIR..."
+	rm -rf "$WORKDIR"
+
+	echo "Removing temp Mesos dir at: /tmp/mesos..."
+	rm -rf /tmp/mesos
 }
 
+if [ "$(id -u)" != "0" ]; then
+   echo "Mesos requires to be executed as root."
+   exit 1
+fi
 
 if [ -z "$SCRIPTDIR" ]; then
 	echo "Could not detect current script dir..."
@@ -81,5 +113,3 @@ case "$1" in
 		exit 1
 		;;
 esac
-
-

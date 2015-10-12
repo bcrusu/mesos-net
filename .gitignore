@@ -7,3 +7,4 @@ obj
 *.sdf
 /src/native/Debug/
 *.userprefs
+/support/work/
