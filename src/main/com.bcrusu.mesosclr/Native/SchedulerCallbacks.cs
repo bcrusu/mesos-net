@@ -116,8 +116,7 @@ namespace com.bcrusu.mesosclr.Native
         private static void Error(long managedDriverId, string message)
         {
             CallScheduler(managedDriverId,
-                (driver, executor) => executor.Error(driver,
-                    message));
+                (driver, executor) => executor.Error(driver, message));
         }
 
         private static void CallScheduler(long managedDriverId, Action<MesosSchedulerDriver, IScheduler> action)

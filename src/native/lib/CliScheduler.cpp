@@ -57,7 +57,7 @@ void CliScheduler::executorLost(SchedulerDriver* driver, const ExecutorID& execu
 }
 
 void CliScheduler::error(SchedulerDriver* driver, const string& message) {
-	ByteArray messageBytes = StringToByteArray(message);
+	//TODO: marshal as char* ByteArray messageBytes = StringToByteArray(message);
 	_schedulerInterface.error(_managedSchedulerDriverId, &messageBytes);
 }
 

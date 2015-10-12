@@ -27,8 +27,8 @@ namespace com.bcrusu.mesosclr.Native
             [DllImport(NativeLibraryFileName, EntryPoint = "mesosclr_ExecutorDriver_Join")]
             public static extern int Join(IntPtr nativeDriverPtr);
 
-			[DllImport(NativeLibraryFileName, EntryPoint = "mesosclr_ExecutorDriver_Run")]
-			public static extern int Run(IntPtr nativeDriverPtr);
+            [DllImport(NativeLibraryFileName, EntryPoint = "mesosclr_ExecutorDriver_Run")]
+            public static extern int Run(IntPtr nativeDriverPtr);
 
             [DllImport(NativeLibraryFileName, EntryPoint = "mesosclr_ExecutorDriver_SendStatusUpdate")]
             public static extern int SendStatusUpdate(IntPtr nativeDriverPtr, IntPtr status);
@@ -38,9 +38,10 @@ namespace com.bcrusu.mesosclr.Native
         }
 
         public static class SchedulerDriver
-		{ 
+        {
             [DllImport(NativeLibraryFileName, EntryPoint = "mesosclr_SchedulerDriver_Initialize")]
-			public unsafe static extern IntPtr Initialize(long managedDriverId, SchedulerInterface* schedulerInterface, IntPtr frameworkInfo, IntPtr masterAddress, bool implicitAcknowledgements, IntPtr credential);
+            public unsafe static extern IntPtr Initialize(long managedDriverId, SchedulerInterface* schedulerInterface, IntPtr frameworkInfo,
+                [MarshalAs(UnmanagedType.LPStr)] string masterAddress, bool implicitAcknowledgements, IntPtr credential);
 
             [DllImport(NativeLibraryFileName, EntryPoint = "mesosclr_SchedulerDriver_Finalize")]
             public static extern void Finalize(IntPtr nativeDriverPtr);
@@ -57,8 +58,8 @@ namespace com.bcrusu.mesosclr.Native
             [DllImport(NativeLibraryFileName, EntryPoint = "mesosclr_SchedulerDriver_Join")]
             public static extern int Join(IntPtr nativeDriverPtr);
 
-			[DllImport(NativeLibraryFileName, EntryPoint = "mesosclr_SchedulerDriver_Run")]
-			public static extern int Run(IntPtr nativeDriverPtr);
+            [DllImport(NativeLibraryFileName, EntryPoint = "mesosclr_SchedulerDriver_Run")]
+            public static extern int Run(IntPtr nativeDriverPtr);
 
             [DllImport(NativeLibraryFileName, EntryPoint = "mesosclr_SchedulerDriver_RequestResources")]
             public static extern int RequestResources(IntPtr nativeDriverPtr, IntPtr requests);

@@ -6,10 +6,10 @@ namespace mesosclr {
 extern "C" {
 
 CliSchedulerDriver* mesosclr_SchedulerDriver_Initialize(long managedSchedulerDriverId, ManagedSchedulerInterface* schedulerInterface,
-		ByteArray* frameworkInfoBytes, ByteArray* masterAddressBytes, bool implicitAcknowledgements,
+		ByteArray* frameworkInfoBytes, cosnt char* masterAddressChars, bool implicitAcknowledgements,
 		ByteArray* credentialBytes) {
 	FrameworkInfo frameworkInfo = protobuf::Deserialize<FrameworkInfo>(frameworkInfoBytes);
-	std::string masterAddress(masterAddressBytes->Data, masterAddressBytes->Size);
+	std::string masterAddress(masterAddressBytes->Data, masterAddressBytes->Size);  //TODO
 	Credential credential = protobuf::Deserialize<Credential>(credentialBytes);
 
 	CliScheduler* scheduler = new CliScheduler(managedSchedulerDriverId, *schedulerInterface);

@@ -145,14 +145,12 @@ namespace com.bcrusu.mesosclr.Native
             if (credential != null)
                 credentialBytes = ProtoBufHelper.Serialize(credential);
 
-            //TODO: string marshalling
-
             unsafe
             {
                 using (var pinnedFrameworkInfo = MarshalHelper.CreatePinnedObject(frameworkInfoBytes))
                 using (var pinnedCredential = MarshalHelper.CreatePinnedObject(credentialBytes))
                     _nativeDriverPtr = NativeImports.SchedulerDriver.Initialize(managedDriverId, &schedulerInterface,
-                        pinnedFrameworkInfo.Ptr, IntPtr.Zero, implicitAcknowledgements, pinnedCredential.Ptr);
+                        pinnedFrameworkInfo.Ptr, masterAddress, implicitAcknowledgements, pinnedCredential.Ptr);
             }
         }
 

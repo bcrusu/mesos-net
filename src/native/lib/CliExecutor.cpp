@@ -46,7 +46,7 @@ void CliExecutor::shutdown(ExecutorDriver* driver) {
 }
 
 void CliExecutor::error(ExecutorDriver* driver, const string& message) {
-	ByteArray messageBytes = StringToByteArray(message);
+	//TODO: marshal as char* ByteArray messageBytes = StringToByteArray(message);
 	_executorInterface.error(_managedExecutorDriverId, &messageBytes);
 }
 
