@@ -62,9 +62,7 @@
     <Compile Include="IScheduler.cs" />
     <Compile Include="IExecutorDriver.cs" />
     <Compile Include="IExecutor.cs" />
-    <Compile Include="generated\containerizer.cs" />
     <Compile Include="generated\executor.cs" />
-    <Compile Include="generated\fetcher.cs" />
     <Compile Include="generated\mesos.cs" />
     <Compile Include="generated\scheduler.cs" />
     <Compile Include="generated\v1\executor.cs" />
