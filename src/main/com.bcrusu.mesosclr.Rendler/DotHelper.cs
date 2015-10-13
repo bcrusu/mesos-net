@@ -11,7 +11,7 @@ namespace com.bcrusu.mesosclr.Rendler
             IDictionary<string, string> nodeImageFileName)
         {
             var nodeNames = new Dictionary<string, string>();
-            var edgeIdCounter = 0;
+            var nodeIdCounter = 0;
 
             using (var fs = new FileStream(outputPath, FileMode.CreateNew, FileAccess.Write, FileShare.Write))
             using (var writer = new StreamWriter(fs, Encoding.UTF8))
@@ -22,7 +22,7 @@ namespace com.bcrusu.mesosclr.Rendler
                 foreach (var node in nodeToChildNodes)
                 {
                     var url = node.Key;
-                    var nodeName = "url_" + (++edgeIdCounter);
+                    var nodeName = "url_" + (++nodeIdCounter);
                     nodeNames[url] = nodeName;
 
                     writer.Write("\t");
