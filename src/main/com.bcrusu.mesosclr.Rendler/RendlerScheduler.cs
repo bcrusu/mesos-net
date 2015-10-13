@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using com.bcrusu.mesosclr.Rendler.Executors.Messages;
 using mesos;
 
@@ -10,26 +12,32 @@ namespace com.bcrusu.mesosclr.Rendler
 {
     internal class RendlerScheduler : IScheduler
     {
-        private const double Render_CPUS = 1d;
-        private const double Render_MEM = 128d;
-        private const double Crawl_CPUS = 0.5d;
-        private const double Crawl_MEM = 64d;
+        private const double RenderCpus = 1d;
+        private const double RenderMem = 128d;
+        private const double CrawlCpus = 0.5d;
+        private const double CrawlMem = 64d;
 
-        private readonly string _startUrl;
         private readonly string _outputDir;
+        private readonly int _maxTasksToRun;
 
         private int _launchedTasks;
-        private int _finishedTasks;
+        private int _finishedTasksCount;
         private readonly ConcurrentQueue<string> _crawlQueue = new ConcurrentQueue<string>();
         private readonly ConcurrentQueue<string> _renderQueue = new ConcurrentQueue<string>();
-        private ISet<string> _crawled = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
+        private readonly ISet<string> _crawled = new HashSet<string>();
 
-        public RendlerScheduler(string startUrl, string outputDir)
+        private readonly ConcurrentDictionary<string, string> _urlToFileMap = new ConcurrentDictionary<string, string>();
+        private readonly ConcurrentDictionary<string, List<string>> _edgesMap = new ConcurrentDictionary<string, List<string>>();
+
+        public RendlerScheduler(string startUrl, string outputDir, int maxTasksToRun = 100)
         {
             if (startUrl == null) throw new ArgumentNullException(nameof(startUrl));
             if (outputDir == null) throw new ArgumentNullException(nameof(outputDir));
-            _startUrl = startUrl;
             _outputDir = outputDir;
+            _maxTasksToRun = maxTasksToRun;
+
+            _crawlQueue.Enqueue(startUrl);
+            _renderQueue.Enqueue(startUrl);
         }
 
         public void Registered(ISchedulerDriver driver, FrameworkID frameworkId, MasterInfo masterInfo)
@@ -63,6 +71,7 @@ namespace com.bcrusu.mesosclr.Rendler
                     {
                         tasks.Add(GetCrawlTaskInfo(offer, ++_launchedTasks, crawlUrl));
                         resourcesCounter.SubstractCrawlResources();
+                        _crawled.Add(crawlUrl);
                         done = false;
                     }
                 } while (!done);
@@ -80,6 +89,24 @@ namespace com.bcrusu.mesosclr.Rendler
 
         public void StatusUpdate(ISchedulerDriver driver, TaskStatus status)
         {
+            if (status.state.IsTerminal())
+            {
+                Console.WriteLine($"Status update: task '{status.task_id}' has terminated with state '{status.state}'.");
+                var finishedTasksCount = Interlocked.Increment(ref _finishedTasksCount);
+
+                if (finishedTasksCount == _maxTasksToRun)
+                {
+                    Console.WriteLine("Reached the max number of tasks to run. Stopping...");
+
+                    var dotWritePath = Path.Combine(_outputDir, "result.dot");
+                    DotHelper.Write(dotWritePath, _edgesMap, _urlToFileMap);
+                    driver.Stop();
+                }
+            }
+            else
+            {
+                Console.WriteLine($"Status update: task '{status.task_id}' is in state '{status.state}'.");
+            }
         }
 
         public void FrameworkMessage(ISchedulerDriver driver, ExecutorID executorId, SlaveID slaveId, byte[] data)
@@ -88,12 +115,28 @@ namespace com.bcrusu.mesosclr.Rendler
             switch (message.Type)
             {
                 case "CrawlResult":
-                    var crawlResultMessage = JsonHelper.Deserialize<CrawlResultMessage>(message.Body);
-                    Console.WriteLine(message.Body); //TODO
+                    var crawlResult = JsonHelper.Deserialize<CrawlResultMessage>(message.Body);
+
+                    foreach (var link in crawlResult.Links)
+                    {
+                        if (_crawled.Contains(link))
+                            continue;
+
+                        _crawlQueue.Enqueue(link);
+                        _renderQueue.Enqueue(link);
+                    }
+
+                    // update edges: url -> links
+                    var edges = _edgesMap.GetOrAdd(crawlResult.Url, x => new List<string>());
+                    edges.AddRange(crawlResult.Links);
+
+                    // empty edge list for links
+                    foreach (var link in crawlResult.Links)
+                        _edgesMap.GetOrAdd(link, x => new List<string>());
                     break;
                 case "RenderResult":
-                    var renderResultMessage = JsonHelper.Deserialize<RenderResultMessage>(message.Body);
-                    Console.WriteLine(message.Body); //TODO
+                    var renderResult = JsonHelper.Deserialize<RenderResultMessage>(message.Body);
+                    _urlToFileMap[renderResult.Url] = renderResult.FileName;
                     break;
                 default:
                     Console.WriteLine($"Unrecognized message type: '{message.Type}'");
@@ -127,8 +170,8 @@ namespace com.bcrusu.mesosclr.Rendler
                 slave_id = offer.slave_id,
                 resources =
                 {
-                    new Resource {name = "cpus", type = Value.Type.SCALAR, scalar = new Value.Scalar {value = Render_CPUS}},
-                    new Resource {name = "mem", type = Value.Type.SCALAR, scalar = new Value.Scalar {value = Render_MEM}}
+                    new Resource {name = "cpus", type = Value.Type.SCALAR, scalar = new Value.Scalar {value = RenderCpus}},
+                    new Resource {name = "mem", type = Value.Type.SCALAR, scalar = new Value.Scalar {value = RenderMem}}
                 },
                 executor = new ExecutorInfo
                 {
@@ -149,8 +192,8 @@ namespace com.bcrusu.mesosclr.Rendler
                 slave_id = offer.slave_id,
                 resources =
                 {
-                    new Resource {name = "cpus", type = Value.Type.SCALAR, scalar = new Value.Scalar {value = Crawl_CPUS}},
-                    new Resource {name = "mem", type = Value.Type.SCALAR, scalar = new Value.Scalar {value = Crawl_MEM}}
+                    new Resource {name = "cpus", type = Value.Type.SCALAR, scalar = new Value.Scalar {value = CrawlCpus}},
+                    new Resource {name = "mem", type = Value.Type.SCALAR, scalar = new Value.Scalar {value = CrawlMem}}
                 },
                 executor = new ExecutorInfo
                 {
@@ -182,22 +225,22 @@ namespace com.bcrusu.mesosclr.Rendler
 
             public bool HasRenderTaskResources()
             {
-                return HasResources(Render_CPUS, Render_MEM);
+                return HasResources(RenderCpus, RenderMem);
             }
 
             public bool HasCrawlTaskResources()
             {
-                return HasResources(Crawl_CPUS, Crawl_MEM);
+                return HasResources(CrawlCpus, CrawlMem);
             }
 
             public void SubstractRenderResources()
             {
-                Substract(Render_CPUS, Render_MEM);
+                Substract(RenderCpus, RenderMem);
             }
 
             public void SubstractCrawlResources()
             {
-                Substract(Crawl_CPUS, Crawl_MEM);
+                Substract(CrawlCpus, CrawlMem);
             }
 
             private bool HasResources(double cpus, double mem)

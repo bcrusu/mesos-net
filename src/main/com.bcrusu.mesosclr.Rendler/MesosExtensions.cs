@@ -1,8 +1,8 @@
 ﻿using mesos;
 
-namespace com.bcrusu.mesosclr.Rendler.Executors
+namespace com.bcrusu.mesosclr.Rendler
 {
-    internal static class ExecutorHelper
+    internal static class MesosExtensions
     {
         public static void SendTaskRunningStatus(this IExecutorDriver driver, TaskID taskId)
         {
@@ -20,6 +20,15 @@ namespace com.bcrusu.mesosclr.Rendler.Executors
                 task_id = taskId,
                 state = TaskState.TASK_FINISHED
             });
+        }
+
+        public static bool IsTerminal(this TaskState state)
+        {
+            return state == TaskState.TASK_FINISHED ||
+                   state == TaskState.TASK_FAILED ||
+                   state == TaskState.TASK_KILLED ||
+                   state == TaskState.TASK_LOST ||
+                   state == TaskState.TASK_ERROR;
         }
     }
 }

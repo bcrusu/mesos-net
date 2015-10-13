@@ -35,9 +35,11 @@ namespace com.bcrusu.mesosclr.Rendler.Executors
             if (htmlContent != null)
             {
                 var links = ExtractLinks(htmlContent);
-                links = links.Distinct(StringComparer.CurrentCultureIgnoreCase);
+                links = links
+                    .Select(x => x.ToLower())
+                    .Distinct(StringComparer.CurrentCultureIgnoreCase);
 
-                SendCrawlResultMessage(driver, links.ToArray());
+                SendCrawlResultMessage(driver, url, links.ToArray());
             }
 
             driver.SendTaskFinishedStatus(taskInfo.task_id);
@@ -71,13 +73,14 @@ namespace com.bcrusu.mesosclr.Rendler.Executors
             }
         }
 
-        private static void SendCrawlResultMessage(IExecutorDriver driver, string[] links)
+        private static void SendCrawlResultMessage(IExecutorDriver driver, string url, string[] links)
         {
             var message = new Message
             {
                 Type = "CrawlResult",
                 Body = JsonHelper.Serialize(new CrawlResultMessage
                 {
+                    Url = url,
                     Links = links
                 })
             };
