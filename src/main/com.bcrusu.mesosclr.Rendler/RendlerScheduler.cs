@@ -18,6 +18,7 @@ namespace com.bcrusu.mesosclr.Rendler
         private const double CrawlMem = 64d;
 
         private readonly string _outputDir;
+		private readonly string _runAsUser;
         private readonly int _maxTasksToRun;
 
         private int _launchedTasks;
@@ -29,12 +30,14 @@ namespace com.bcrusu.mesosclr.Rendler
         private readonly ConcurrentDictionary<string, string> _urlToFileMap = new ConcurrentDictionary<string, string>();
         private readonly ConcurrentDictionary<string, List<string>> _edgesMap = new ConcurrentDictionary<string, List<string>>();
 
-        public RendlerScheduler(string startUrl, string outputDir, int maxTasksToRun = 100)
+        public RendlerScheduler(string startUrl, string outputDir, 
+			string runAsUser = null, int maxTasksToRun = 100)
         {
             if (startUrl == null) throw new ArgumentNullException(nameof(startUrl));
             if (outputDir == null) throw new ArgumentNullException(nameof(outputDir));
             _outputDir = outputDir;
             _maxTasksToRun = maxTasksToRun;
+			_runAsUser = runAsUser;
 
             _crawlQueue.Enqueue(startUrl);
             _renderQueue.Enqueue(startUrl);
@@ -176,14 +179,14 @@ namespace com.bcrusu.mesosclr.Rendler
                 executor = new ExecutorInfo
                 {
                     executor_id = new ExecutorID { value = "RenderExecutor" },
-                    command = new CommandInfo { value = "mono rendler.exe -executor=render" },
+					command = new CommandInfo { value = "mono rendler.exe -executor=render", user = _runAsUser },
                     data = Encoding.UTF8.GetBytes(_outputDir)
                 },
                 data = Encoding.UTF8.GetBytes(url)
             };
         }
 
-        private static TaskInfo GetCrawlTaskInfo(Offer offer, int uniqueId, string url)
+        private TaskInfo GetCrawlTaskInfo(Offer offer, int uniqueId, string url)
         {
             return new TaskInfo
             {
@@ -198,7 +201,7 @@ namespace com.bcrusu.mesosclr.Rendler
                 executor = new ExecutorInfo
                 {
                     executor_id = new ExecutorID { value = "CrawlExecutor" },
-                    command = new CommandInfo { value = "mono rendler.exe -executor=crawl" }
+					command = new CommandInfo { value = "mono rendler.exe -executor=crawl", user = _runAsUser },
                 },
                 data = Encoding.UTF8.GetBytes(url)
             };

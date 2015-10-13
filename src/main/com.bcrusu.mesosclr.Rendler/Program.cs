@@ -9,13 +9,13 @@ namespace com.bcrusu.mesosclr.Rendler
         static int Main(string[] args)
         {
             var arguments = Arguments.Parse(args);
-            if (arguments == null)
+			if (arguments == null || !arguments.Validate())
                 return -1;
 
             switch (arguments.RunMode)
             {
                 case RunMode.Scheduler:
-                    return RunScheduler(arguments.MesosMaster, arguments.StartUrl, arguments.OutputDir);
+				return RunScheduler(arguments.MesosMaster, arguments.StartUrl, arguments.OutputDir, arguments.RunAsUser);
                 case RunMode.Executor:
                     return RunExecutor(arguments.ExecutorName);
                 default:
@@ -26,29 +26,17 @@ namespace com.bcrusu.mesosclr.Rendler
             }
         }
 
-        private static int RunScheduler(string mesosMaster, string startUrl, string outputDir)
+		private static int RunScheduler(string mesosMaster, string startUrl, string outputDir, string runAsUser)
         {
-            if (string.IsNullOrWhiteSpace(mesosMaster))
-            {
-                Console.WriteLine("Mesos master address was not provided.");
-                return -3;
-            }
-
-            if (string.IsNullOrWhiteSpace(outputDir))
-            {
-                Console.WriteLine("Output directory was not provided.");
-                return -3;
-            }
-
-
-            var frameworkInfo = new FrameworkInfo
+			var frameworkInfo = new FrameworkInfo
             {
                 name = "Rendler (C#)",
                 failover_timeout = 5,  //seconds
-                checkpoint = false
+                checkpoint = false,
+				user = runAsUser
             };
 
-            var scheduler = new RendlerScheduler(startUrl ?? "https://mesosphere.com", outputDir);
+			var scheduler = new RendlerScheduler(startUrl ?? "https://mesosphere.com", outputDir, runAsUser);
             var driver = new MesosSchedulerDriver(scheduler, frameworkInfo, mesosMaster);
 
             return driver.Run() == Status.DRIVER_STOPPED ? 0 : 1;
