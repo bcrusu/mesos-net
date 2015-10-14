@@ -2831,10 +2831,10 @@ namespace mesos.v1
       get { return _principal; }
       set { _principal = value; }
     }
-    private byte[] _secret = null;
+    private string _secret = "";
     [global::ProtoBuf.ProtoMember(2, IsRequired = false, Name=@"secret", DataFormat = global::ProtoBuf.DataFormat.Default)]
-    [global::System.ComponentModel.DefaultValue(null)]
-    public byte[] secret
+    [global::System.ComponentModel.DefaultValue("")]
+    public string secret
     {
       get { return _secret; }
       set { _secret = value; }
@@ -3098,9 +3098,9 @@ namespace mesos.v1
       get { return _image; }
       set { _image = value; }
     }
-    private mesos.v1.ContainerInfo.DockerInfo.Network _network = global::mesos.v1.ContainerInfo.DockerInfo.Network.HOST;
+    private mesos.v1.ContainerInfo.DockerInfo.Network _network = mesos.v1.ContainerInfo.DockerInfo.Network.HOST;
     [global::ProtoBuf.ProtoMember(2, IsRequired = false, Name=@"network", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    [global::System.ComponentModel.DefaultValue(global::mesos.v1.ContainerInfo.DockerInfo.Network.HOST)]
+    [global::System.ComponentModel.DefaultValue(mesos.v1.ContainerInfo.DockerInfo.Network.HOST)]
     public mesos.v1.ContainerInfo.DockerInfo.Network network
     {
       get { return _network; }

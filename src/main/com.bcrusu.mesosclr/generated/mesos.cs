@@ -2690,8 +2690,29 @@ namespace mesos
       [global::ProtoBuf.ProtoEnum(Name=@"REASON_COMMAND_EXECUTOR_FAILED", Value=0)]
       REASON_COMMAND_EXECUTOR_FAILED = 0,
             
-      [global::ProtoBuf.ProtoEnum(Name=@"REASON_EXECUTOR_PREEMPTED", Value=17)]
-      REASON_EXECUTOR_PREEMPTED = 17,
+      [global::ProtoBuf.ProtoEnum(Name=@"REASON_CONTAINER_LAUNCH_FAILED", Value=21)]
+      REASON_CONTAINER_LAUNCH_FAILED = 21,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"REASON_CONTAINER_LIMITATION", Value=19)]
+      REASON_CONTAINER_LIMITATION = 19,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"REASON_CONTAINER_LIMITATION_DISK", Value=20)]
+      REASON_CONTAINER_LIMITATION_DISK = 20,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"REASON_CONTAINER_LIMITATION_MEMORY", Value=8)]
+      REASON_CONTAINER_LIMITATION_MEMORY = 8,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"REASON_CONTAINER_PREEMPTED", Value=17)]
+      REASON_CONTAINER_PREEMPTED = 17,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"REASON_CONTAINER_UPDATE_FAILED", Value=22)]
+      REASON_CONTAINER_UPDATE_FAILED = 22,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"REASON_EXECUTOR_REGISTRATION_TIMEOUT", Value=23)]
+      REASON_EXECUTOR_REGISTRATION_TIMEOUT = 23,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"REASON_EXECUTOR_REREGISTRATION_TIMEOUT", Value=24)]
+      REASON_EXECUTOR_REREGISTRATION_TIMEOUT = 24,
             
       [global::ProtoBuf.ProtoEnum(Name=@"REASON_EXECUTOR_TERMINATED", Value=1)]
       REASON_EXECUTOR_TERMINATED = 1,
@@ -2713,9 +2734,6 @@ namespace mesos
             
       [global::ProtoBuf.ProtoEnum(Name=@"REASON_MASTER_DISCONNECTED", Value=7)]
       REASON_MASTER_DISCONNECTED = 7,
-            
-      [global::ProtoBuf.ProtoEnum(Name=@"REASON_MEMORY_LIMIT", Value=8)]
-      REASON_MEMORY_LIMIT = 8,
             
       [global::ProtoBuf.ProtoEnum(Name=@"REASON_RECONCILIATION", Value=9)]
       REASON_RECONCILIATION = 9,
@@ -2862,10 +2880,10 @@ namespace mesos
       get { return _principal; }
       set { _principal = value; }
     }
-    private byte[] _secret = null;
+    private string _secret = "";
     [global::ProtoBuf.ProtoMember(2, IsRequired = false, Name=@"secret", DataFormat = global::ProtoBuf.DataFormat.Default)]
-    [global::System.ComponentModel.DefaultValue(null)]
-    public byte[] secret
+    [global::System.ComponentModel.DefaultValue("")]
+    public string secret
     {
       get { return _secret; }
       set { _secret = value; }
@@ -3217,9 +3235,9 @@ namespace mesos
       get { return _image; }
       set { _image = value; }
     }
-    private mesos.ContainerInfo.DockerInfo.Network _network = global::mesos.ContainerInfo.DockerInfo.Network.HOST;
+    private mesos.ContainerInfo.DockerInfo.Network _network = mesos.ContainerInfo.DockerInfo.Network.HOST;
     [global::ProtoBuf.ProtoMember(2, IsRequired = false, Name=@"network", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    [global::System.ComponentModel.DefaultValue(global::mesos.ContainerInfo.DockerInfo.Network.HOST)]
+    [global::System.ComponentModel.DefaultValue(mesos.ContainerInfo.DockerInfo.Network.HOST)]
     public mesos.ContainerInfo.DockerInfo.Network network
     {
       get { return _network; }
