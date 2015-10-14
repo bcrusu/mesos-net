@@ -10,7 +10,6 @@ CliSchedulerDriver* mesosclr_SchedulerDriver_Initialize(long managedSchedulerDri
 		ByteArray* credentialBytes) {
 	FrameworkInfo frameworkInfo = protobuf::Deserialize<FrameworkInfo>(frameworkInfoBytes);
 	std::string masterAddress(masterAddressChars);
-	Credential credential = protobuf::Deserialize<Credential>(credentialBytes);
 
 	CliScheduler* scheduler = new CliScheduler(managedSchedulerDriverId, *schedulerInterface);
 	CliSchedulerDriver* driver;

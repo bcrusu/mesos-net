@@ -22,6 +22,15 @@ namespace com.bcrusu.mesosclr.Rendler
             });
         }
 
+		public static void SendTaskErrorStatus(this IExecutorDriver driver, TaskID taskId)
+		{
+			driver.SendStatusUpdate(new TaskStatus
+				{
+					task_id = taskId,
+					state = TaskState.TASK_ERROR
+				});
+		}
+
         public static bool IsTerminal(this TaskState state)
         {
             return state == TaskState.TASK_FINISHED ||

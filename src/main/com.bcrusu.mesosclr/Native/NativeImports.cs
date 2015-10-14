@@ -5,7 +5,7 @@ namespace com.bcrusu.mesosclr.Native
 {
     internal class NativeImports
     {
-        private const string NativeLibraryFileName = "mesosclr.so";
+		private const string NativeLibraryFileName = "libmesosclr.so";
 
         public static class ExecutorDriver
         {

@@ -14,7 +14,6 @@
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -22,7 +21,21 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Commandlineparameters>-scheduler -master=127.0.0.50:5050 -user=bcrusu -output="~/rendlerout"</Commandlineparameters>
+    <Commandlineparameters>-scheduler -master=127.0.0.50:5050 -user=bcrusu -output=/tmp/rendlerout</Commandlineparameters>
+    <CustomCommands>
+      <CustomCommands>
+        <Command type="AfterBuild" command="cp -u ../native/Debug/libmesosclr.so ${TargetDir}" workingdir="${SolutionDir}" />
+      </CustomCommands>
+    </CustomCommands>
+    <EnvironmentVariables>
+      <EnvironmentVariables>
+        <Variable name="LD_LIBRARY_PATH" value="/home/bcrusu/work/github/mesos-clr/src/native/Debug:/home/bcrusu/work/github/mesos/build/src/.libs:${LD_LIBRARY_PATH}" />
+        <Variable name="MONO_LOG_LEVEL" value="debug" />
+        <Variable name="MONO_LOG_MASK" value="dll" />
+      </EnvironmentVariables>
+    </EnvironmentVariables>
+    <ConsolePause>false</ConsolePause>
+    <LangVersion>6</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -32,6 +45,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>6</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />

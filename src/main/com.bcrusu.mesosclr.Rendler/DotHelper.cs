@@ -28,8 +28,8 @@ namespace com.bcrusu.mesosclr.Rendler
                     writer.Write("\t");
                     writer.Write(nodeName);
 
-                    var imageFileName = nodeImageFileName[url];
-                    if (imageFileName != null)
+                    string imageFileName;
+					if (nodeImageFileName.TryGetValue(url, out imageFileName))
                     {
                         writer.Write(" [label=\"\" image=\"");
                         writer.Write(imageFileName);

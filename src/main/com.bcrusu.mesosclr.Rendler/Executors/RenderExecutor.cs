@@ -14,15 +14,23 @@ namespace com.bcrusu.mesosclr.Rendler.Executors
         private string _outputDir;
 
         public override void Registered(IExecutorDriver driver, ExecutorInfo executorInfo, FrameworkInfo frameworkInfo, SlaveInfo slaveInfo)
-        {
-            Console.WriteLine("Registered executor on " + slaveInfo.hostname);
-            _outputDir = Encoding.UTF8.GetString(executorInfo.data);
-        }
+		{
+			_outputDir = Encoding.UTF8.GetString (executorInfo.data);
+			Console.WriteLine ($"Registered executor on host '{slaveInfo.hostname}'. Output dir is '{_outputDir}'.");
+		}
 
         public override void LaunchTask(IExecutorDriver driver, TaskInfo taskInfo)
         {
-            Console.WriteLine($"Launching render task '{taskInfo.task_id}'...");
-            Task.Factory.StartNew(() => RunTask(driver, taskInfo));
+            Console.WriteLine($"Launching render task '{taskInfo.task_id.value}'...");
+
+			Task.Factory.StartNew (() => {
+				try {
+					RunTask (driver, taskInfo);
+				} catch (Exception e) {
+					Console.WriteLine ($"Exception during render operation: {e}");
+					driver.SendTaskErrorStatus (taskInfo.task_id);
+				}
+			});
         }
 
         private void RunTask(IExecutorDriver driver, TaskInfo taskInfo)
@@ -38,15 +46,12 @@ namespace com.bcrusu.mesosclr.Rendler.Executors
 
         private string RunRendering(TaskID taskId, string url)
         {
-            var programDir = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
-            var renderJsPath = Path.Combine(programDir, "render.js");
-            var imagesDir = Path.Combine(_outputDir, "images");
-            var imagePath = Path.Combine(imagesDir, $"{taskId.value}.png");
+			var imagePath = Path.Combine(_outputDir, $"{taskId.value}.png");
 
-            var startInfo = new ProcessStartInfo("phantomjs");
-            startInfo.Arguments = $"\"{renderJsPath}\" \"{url}\" \"{imagePath}\"";
+			var startInfo = new ProcessStartInfo("phantomjs");
+			startInfo.Arguments = $"render.js \"{url}\" \"{imagePath}\"";
             startInfo.WindowStyle = ProcessWindowStyle.Hidden;
-            startInfo.WorkingDirectory = imagesDir;
+			startInfo.UseShellExecute = false;
 
             var process = Process.Start(startInfo);
             process.WaitForExit();

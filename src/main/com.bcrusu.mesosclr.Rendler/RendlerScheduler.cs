@@ -12,6 +12,8 @@ namespace com.bcrusu.mesosclr.Rendler
 {
     internal class RendlerScheduler : IScheduler
     {
+		private const double MaxTasksToRun = 256; // limit for demonstration purpose
+
         private const double RenderCpus = 1d;
         private const double RenderMem = 128d;
         private const double CrawlCpus = 0.5d;
@@ -19,7 +21,7 @@ namespace com.bcrusu.mesosclr.Rendler
 
         private readonly string _outputDir;
 		private readonly string _runAsUser;
-        private readonly int _maxTasksToRun;
+
 
         private int _launchedTasks;
         private int _finishedTasksCount;
@@ -31,12 +33,11 @@ namespace com.bcrusu.mesosclr.Rendler
         private readonly ConcurrentDictionary<string, List<string>> _edgesMap = new ConcurrentDictionary<string, List<string>>();
 
         public RendlerScheduler(string startUrl, string outputDir, 
-			string runAsUser = null, int maxTasksToRun = 100)
+			string runAsUser = null)
         {
             if (startUrl == null) throw new ArgumentNullException(nameof(startUrl));
             if (outputDir == null) throw new ArgumentNullException(nameof(outputDir));
             _outputDir = outputDir;
-            _maxTasksToRun = maxTasksToRun;
 			_runAsUser = runAsUser;
 
             _crawlQueue.Enqueue(startUrl);
@@ -58,15 +59,17 @@ namespace com.bcrusu.mesosclr.Rendler
             {
                 var tasks = new List<TaskInfo>();
                 var resourcesCounter = new ResourcesCounter(offer);
-                var done = true;
+                bool done;
                 do
                 {
+					done = true;
+
                     string renderUrl;
                     if (resourcesCounter.HasRenderTaskResources() && _renderQueue.TryDequeue(out renderUrl))
                     {
                         tasks.Add(GetRenderTaskInfo(offer, ++_launchedTasks, renderUrl));
                         resourcesCounter.SubstractRenderResources();
-                        done = false;
+						done = false;
                     }
 
                     string crawlUrl;
@@ -75,13 +78,14 @@ namespace com.bcrusu.mesosclr.Rendler
                         tasks.Add(GetCrawlTaskInfo(offer, ++_launchedTasks, crawlUrl));
                         resourcesCounter.SubstractCrawlResources();
                         _crawled.Add(crawlUrl);
-                        done = false;
+						done = false;
                     }
                 } while (!done);
 
-                if (tasks.Any())
-                    driver.LaunchTasks(new[] { offer.id }, tasks);
-                else
+				if (tasks.Any ()) {
+					driver.LaunchTasks (new[] { offer.id }, tasks);
+				}
+                else 
                     driver.DeclineOffer(offer.id);
             }
         }
@@ -94,10 +98,10 @@ namespace com.bcrusu.mesosclr.Rendler
         {
             if (status.state.IsTerminal())
             {
-                Console.WriteLine($"Status update: task '{status.task_id}' has terminated with state '{status.state}'.");
+                Console.WriteLine($"Status update: task '{status.task_id.value}' has terminated with state '{status.state}'.");
                 var finishedTasksCount = Interlocked.Increment(ref _finishedTasksCount);
 
-                if (finishedTasksCount == _maxTasksToRun)
+				if (finishedTasksCount >= MaxTasksToRun)
                 {
                     Console.WriteLine("Reached the max number of tasks to run. Stopping...");
 
@@ -108,44 +112,45 @@ namespace com.bcrusu.mesosclr.Rendler
             }
             else
             {
-                Console.WriteLine($"Status update: task '{status.task_id}' is in state '{status.state}'.");
+                Console.WriteLine($"Status update: task '{status.task_id.value}' is in state '{status.state}'.");
             }
         }
 
         public void FrameworkMessage(ISchedulerDriver driver, ExecutorID executorId, SlaveID slaveId, byte[] data)
-        {
-            var message = JsonHelper.Deserialize<Message>(data);
-            switch (message.Type)
-            {
-                case "CrawlResult":
-                    var crawlResult = JsonHelper.Deserialize<CrawlResultMessage>(message.Body);
+		{
+			var message = JsonHelper.Deserialize<Message> (data);
+			switch (message.Type) {
+			case "CrawlResult":
+				var crawlResult = JsonHelper.Deserialize<CrawlResultMessage> (message.Body);
+				Console.WriteLine ($"Framework message <CrawlResult>: got {crawlResult.Links.Length} links from url '{crawlResult.Url}'.");
 
-                    foreach (var link in crawlResult.Links)
-                    {
-                        if (_crawled.Contains(link))
-                            continue;
+				foreach (var link in crawlResult.Links) {
+					if (_crawled.Contains (link))
+						continue;
 
-                        _crawlQueue.Enqueue(link);
-                        _renderQueue.Enqueue(link);
-                    }
+					_crawlQueue.Enqueue (link);
+					_renderQueue.Enqueue (link);
+				}
 
-                    // update edges: url -> links
-                    var edges = _edgesMap.GetOrAdd(crawlResult.Url, x => new List<string>());
-                    edges.AddRange(crawlResult.Links);
+                // update edges: url -> links
+				var edges = _edgesMap.GetOrAdd (crawlResult.Url, x => new List<string> ());
+				edges.AddRange (crawlResult.Links);
 
-                    // empty edge list for links
-                    foreach (var link in crawlResult.Links)
-                        _edgesMap.GetOrAdd(link, x => new List<string>());
-                    break;
-                case "RenderResult":
-                    var renderResult = JsonHelper.Deserialize<RenderResultMessage>(message.Body);
-                    _urlToFileMap[renderResult.Url] = renderResult.FileName;
-                    break;
-                default:
-                    Console.WriteLine($"Unrecognized message type: '{message.Type}'");
-                    break;
-            }
-        }
+                // empty edge list for links
+				foreach (var link in crawlResult.Links)
+					_edgesMap.GetOrAdd (link, x => new List<string> ());
+				break;
+			case "RenderResult":
+				var renderResult = JsonHelper.Deserialize<RenderResultMessage> (message.Body);
+				Console.WriteLine ($"Framework message <RenderResult>: saved '{renderResult.FileName}' for url '{renderResult.Url}'.");
+
+				_urlToFileMap [renderResult.Url] = renderResult.FileName;
+				break;
+			default:
+				Console.WriteLine ($"Unrecognized message type: '{message.Type}'");
+				break;
+			}
+		}
 
         public void Disconnected(ISchedulerDriver driver)
         {
@@ -165,47 +170,77 @@ namespace com.bcrusu.mesosclr.Rendler
         }
 
         private TaskInfo GetRenderTaskInfo(Offer offer, int uniqueId, string url)
-        {
-            return new TaskInfo
-            {
-                name = "Rendler.Render_" + uniqueId,
-                task_id = new TaskID { value = uniqueId.ToString() },
-                slave_id = offer.slave_id,
-                resources =
-                {
-                    new Resource {name = "cpus", type = Value.Type.SCALAR, scalar = new Value.Scalar {value = RenderCpus}},
-                    new Resource {name = "mem", type = Value.Type.SCALAR, scalar = new Value.Scalar {value = RenderMem}}
-                },
-                executor = new ExecutorInfo
-                {
-                    executor_id = new ExecutorID { value = "RenderExecutor" },
-					command = new CommandInfo { value = "mono rendler.exe -executor=render", user = _runAsUser },
-                    data = Encoding.UTF8.GetBytes(_outputDir)
-                },
-                data = Encoding.UTF8.GetBytes(url)
-            };
-        }
+		{
+			var result = new TaskInfo {
+				name = "Rendler.Render_" + uniqueId,
+				task_id = new TaskID { value = uniqueId.ToString () },
+				slave_id = offer.slave_id,
+				resources = {
+					new Resource {
+						name = "cpus",
+						type = Value.Type.SCALAR,
+						scalar = new Value.Scalar { value = RenderCpus }
+					},
+					new Resource {
+						name = "mem",
+						type = Value.Type.SCALAR,
+						scalar = new Value.Scalar { value = RenderMem }
+					}
+				},
+				executor = new ExecutorInfo {
+					executor_id = new ExecutorID { value = "RenderExecutor" },
+					command = new CommandInfo { 
+						value = "mono rendler.exe -executor=render", 
+						user = _runAsUser					
+					},
+					data = Encoding.UTF8.GetBytes (_outputDir)
+				},
+				data = Encoding.UTF8.GetBytes (url)
+			};
+
+			result.executor.command.uris.Add (new CommandInfo.URI {
+				cache = false,
+				extract = true,
+				value = "./rendler.tar.gz",  // relative to "frameworks_home" mesos-slave command argument
+				executable = false
+			}); 
+
+			return result;
+		}
 
         private TaskInfo GetCrawlTaskInfo(Offer offer, int uniqueId, string url)
-        {
-            return new TaskInfo
-            {
-                name = "Rendler.Crawl_" + uniqueId,
-                task_id = new TaskID { value = uniqueId.ToString() },
-                slave_id = offer.slave_id,
-                resources =
-                {
-                    new Resource {name = "cpus", type = Value.Type.SCALAR, scalar = new Value.Scalar {value = CrawlCpus}},
-                    new Resource {name = "mem", type = Value.Type.SCALAR, scalar = new Value.Scalar {value = CrawlMem}}
-                },
-                executor = new ExecutorInfo
-                {
-                    executor_id = new ExecutorID { value = "CrawlExecutor" },
-					command = new CommandInfo { value = "mono rendler.exe -executor=crawl", user = _runAsUser },
-                },
-                data = Encoding.UTF8.GetBytes(url)
-            };
-        }
+		{
+			var result = new TaskInfo {				
+				name = "Rendler.Crawl_" + uniqueId,
+				task_id = new TaskID { value = uniqueId.ToString () },
+				slave_id = offer.slave_id,
+				resources = {
+					new Resource {
+						name = "cpus",
+						type = Value.Type.SCALAR,
+						scalar = new Value.Scalar { value = CrawlCpus }
+					},
+					new Resource { name = "mem", type = Value.Type.SCALAR, scalar = new Value.Scalar { value = CrawlMem } }
+				},
+				executor = new ExecutorInfo {
+					executor_id = new ExecutorID { value = "CrawlExecutor" },
+					command = new CommandInfo {
+						value = "mono rendler.exe -executor=crawl", 
+						user = _runAsUser
+					},
+				},
+				data = Encoding.UTF8.GetBytes (url)
+			};
+
+			result.executor.command.uris.Add (new CommandInfo.URI {
+				cache = false,
+				extract = true,
+				value = "./rendler.tar.gz",  // relative to "frameworks_home" mesos-slave command argument
+				executable = false
+			}); 
+
+			return result;
+		}
 
         private class ResourcesCounter
         {

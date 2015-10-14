@@ -10,82 +10,83 @@ using mesos;
 
 namespace com.bcrusu.mesosclr.Rendler.Executors
 {
-    internal class CrawlExecutor : ExecutorBase
-    {
-        private static readonly Regex ExtractLinksRegex = new Regex("<a[^>]+href=[\"']?(?<link>[^\"'>]+)[\"']?[^>]*>(.+?)</a>", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+	internal class CrawlExecutor : ExecutorBase
+	{
+		private static readonly Regex ExtractLinksRegex = new Regex ("<a[^>]+href=[\"']?(?<link>[^\"'>]+)[\"']?[^>]*>(.+?)</a>", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-        public override void Registered(IExecutorDriver driver, ExecutorInfo executorInfo, FrameworkInfo frameworkInfo, SlaveInfo slaveInfo)
-        {
-            Console.WriteLine($"Registered executor on '{slaveInfo.hostname}'.");
-        }
+		public override void Registered (IExecutorDriver driver, ExecutorInfo executorInfo, FrameworkInfo frameworkInfo, SlaveInfo slaveInfo)
+		{
+			Console.WriteLine ($"Registered executor on '{slaveInfo.hostname}'.");
+		}
 
-        public override void LaunchTask(IExecutorDriver driver, TaskInfo taskInfo)
-        {
-            Console.WriteLine($"Launching crawl task '{taskInfo.task_id}'...");
-            Task.Factory.StartNew(() => RunTask(driver, taskInfo));
-        }
+		public override void LaunchTask (IExecutorDriver driver, TaskInfo taskInfo)
+		{
+			Console.WriteLine ($"Launching crawl task '{taskInfo.task_id.value}'...");
 
-        private static void RunTask(IExecutorDriver driver, TaskInfo taskInfo)
-        {
-            driver.SendTaskRunningStatus(taskInfo.task_id);
+			Task.Factory.StartNew (() => {
+				try {
+					RunTask (driver, taskInfo);
+				} catch (Exception e) {
+					Console.WriteLine ($"Exception during crawl operation: {e}");
+					driver.SendTaskErrorStatus (taskInfo.task_id);
+				}
+			});
+		}
 
-            var url = Encoding.UTF8.GetString(taskInfo.data);
+		private static void RunTask (IExecutorDriver driver, TaskInfo taskInfo)
+		{
+			driver.SendTaskRunningStatus (taskInfo.task_id);
 
-            var htmlContent = GetUrlContent(url);
-            if (htmlContent != null)
-            {
-                var links = ExtractLinks(htmlContent);
-                links = links
-                    .Select(x => x.ToLower())
-                    .Distinct(StringComparer.CurrentCultureIgnoreCase);
+			var url = Encoding.UTF8.GetString (taskInfo.data);
 
-                SendCrawlResultMessage(driver, url, links.ToArray());
-            }
+			var htmlContent = GetUrlContent (url);
+			if (htmlContent != null) {
+				var links = ExtractLinks (htmlContent);
+				links = links
+                    .Select (x => x.ToLower ())
+                    .Distinct (StringComparer.CurrentCultureIgnoreCase);
 
-            driver.SendTaskFinishedStatus(taskInfo.task_id);
-        }
+				if (links.Any ())
+					SendCrawlResultMessage (driver, url, links.ToArray ());
+			}
 
-        private static IEnumerable<string> ExtractLinks(string htmlContent)
-        {
-            var match = ExtractLinksRegex.Match(htmlContent);
-            while (match.Success)
-            {
-                yield return match.Groups["link"].Value.Trim();
-                match = match.NextMatch();
-            }
-        }
+			driver.SendTaskFinishedStatus (taskInfo.task_id);
+		}
 
-        private static string GetUrlContent(string url)
-        {
-            using (var client = new WebClient())
-            {
-                client.Headers.Add("X-PoweredBy: minions");
+		private static IEnumerable<string> ExtractLinks (string htmlContent)
+		{
+			var match = ExtractLinksRegex.Match (htmlContent);
+			while (match.Success) {
+				yield return match.Groups ["link"].Value.Trim ();
+				match = match.NextMatch ();
+			}
+		}
 
-                try
-                {
-                    return client.DownloadString(url);
-                }
-                catch (WebException e)
-                {
-                    Console.WriteLine($"Error fetching url '{url}'; Error: {e}");
-                    return null;
-                }
-            }
-        }
+		private static string GetUrlContent (string url)
+		{
+			using (var client = new WebClient ()) {
+				client.Headers.Add ("X-PoweredBy: minions");
 
-        private static void SendCrawlResultMessage(IExecutorDriver driver, string url, string[] links)
-        {
-            var message = new Message
-            {
-                Type = "CrawlResult",
-                Body = JsonHelper.Serialize(new CrawlResultMessage
-                {
-                    Url = url,
-                    Links = links
-                })
-            };
+				try {
+					return client.DownloadString (url);
+				} catch (WebException e) {
+					Console.WriteLine ($"Error fetching url '{url}'; Error: {e}");
+					return null;
+				}
+			}
+		}
 
-            driver.SendFrameworkMessage(JsonHelper.Serialize(message));
-        }
-    }
+		private static void SendCrawlResultMessage (IExecutorDriver driver, string url, string[] links)
+		{
+			var message = new Message {
+				Type = "CrawlResult",
+				Body = JsonHelper.Serialize (new CrawlResultMessage {
+					Url = url,
+					Links = links
+				})
+			};
+
+			driver.SendFrameworkMessage (JsonHelper.Serialize (message));
+		}
+	}
 }
