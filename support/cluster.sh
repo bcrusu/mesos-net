@@ -5,7 +5,7 @@ SCRIPTDIR=$(cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd)
 CLUSTER_WORK_DIR=${SCRIPTDIR}/work
 RENDLER_OUTPUT_DIR=/tmp/rendlerout
 
-APPBUILDDIR=${SCRIPTDIR}/../src/main/com.bcrusu.mesosclr.Rendler/bin/Debug
+APPBUILDDIR=${SCRIPTDIR}/../src/main/mesosclr.Rendler/bin/Debug
 
 copy_files() {
 	if [ ! -f "$APPBUILDDIR/rendler.exe" ]; then
