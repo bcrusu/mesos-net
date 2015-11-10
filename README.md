@@ -2,7 +2,7 @@
 
 ### Status
 
-Full API bindings consistent with the API provided by Mesos 0.25.0 (API v1 not yet exposed).
+Full API bindings consistent with the API provided by Mesos 0.26.0.
 
 ### Items left to do:
 
