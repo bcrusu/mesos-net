@@ -67,9 +67,6 @@
     <Compile Include="generated\executor.cs" />
     <Compile Include="generated\mesos.cs" />
     <Compile Include="generated\scheduler.cs" />
-    <Compile Include="generated\v1\executor.cs" />
-    <Compile Include="generated\v1\mesos.cs" />
-    <Compile Include="generated\v1\scheduler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
