@@ -6,7 +6,6 @@ Full API bindings consistent with the API provided by Mesos 0.25.0 (API v1 not y
 
 ### Items left to do:
 
-- [ ] API v1 bindings
 - [ ] CoreCLR support
 - [ ] More testing
 - [ ] NuGet package
