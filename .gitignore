@@ -1,6 +1,6 @@
 *.suo
 *.user
-/src/main/packages/
+packages
 bin
 obj
 .vs
@@ -8,3 +8,4 @@ obj
 /src/native/Debug/
 *.userprefs
 /support/work/
+*.lock.json
