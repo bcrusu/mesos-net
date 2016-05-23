@@ -4,6 +4,7 @@ packages
 bin
 obj
 .vs
+.vscode
 *.sdf
 /src/native/Debug/
 *.userprefs
