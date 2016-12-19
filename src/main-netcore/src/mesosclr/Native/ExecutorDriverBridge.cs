@@ -29,7 +29,7 @@ namespace mesosclr.Native
 
         public Status Run()
         {
-			return (Status)NativeImports.ExecutorDriver.Run(_nativeDriverPtr);
+            return (Status)NativeImports.ExecutorDriver.Run(_nativeDriverPtr);
         }
 
         public Status SendStatusUpdate(TaskStatus status)

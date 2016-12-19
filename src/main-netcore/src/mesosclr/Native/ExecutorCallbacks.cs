@@ -89,7 +89,7 @@ namespace mesosclr.Native
                 (driver, executor) => executor.Shutdown(driver));
         }
 
-		private static void Error(long managedDriverId, string message)
+        private static void Error(long managedDriverId, string message)
         {
             CallExecutor(managedDriverId,
                 (driver, executor) => executor.Error(driver, message));

@@ -4,50 +4,52 @@ using System.Runtime.InteropServices;
 
 namespace mesosclr.Native
 {
-	internal static class MarshalHelper
-	{
-		public static PinnedObject CreatePinnedObject (byte[] bytes)
-		{
-			if (bytes == null)
-				return PinnedObject.Null;
-			
-			var bytesPinned = new PinnedObject (bytes);
+    internal static class MarshalHelper
+    {
+        public static PinnedObject CreatePinnedObject(byte[] bytes)
+        {
+            if (bytes == null)
+                return PinnedObject.Null;
 
-			var byteArray = new NativeArray {
-				Length = bytes.Length,
-				Items = bytesPinned.Ptr
-			};
+            var bytesPinned = new PinnedObject(bytes);
 
-			return new PinnedObject (byteArray, new[] { bytesPinned });
-		}
+            var byteArray = new NativeArray
+            {
+                Length = bytes.Length,
+                Items = bytesPinned.Ptr
+            };
 
-		public static PinnedObject CreatePinnedObject (IEnumerable<byte[]> arrays)
-		{
-			if (arrays == null)
-				return PinnedObject.Null;
-			
-			var pinnedArrays = arrays.Select (CreatePinnedObject).ToList ();
+            return new PinnedObject(byteArray, new[] { bytesPinned });
+        }
 
-			var arrayPtrs = pinnedArrays.Select (x => x.Ptr).ToArray ();
-			var pinnedArrayPtrs = new PinnedObject (arrayPtrs, pinnedArrays);
+        public static PinnedObject CreatePinnedObject(IEnumerable<byte[]> arrays)
+        {
+            if (arrays == null)
+                return PinnedObject.Null;
 
-			var array = new NativeArray {
-				Length = pinnedArrays.Count,
-				Items = pinnedArrayPtrs.Ptr
-			};
+            var pinnedArrays = arrays.Select(CreatePinnedObject).ToList();
 
-			return new PinnedObject (array, new[] { pinnedArrayPtrs });
-		}
+            var arrayPtrs = pinnedArrays.Select(x => x.Ptr).ToArray();
+            var pinnedArrayPtrs = new PinnedObject(arrayPtrs, pinnedArrays);
 
-	    public static unsafe byte[] ToMangedByteArray(NativeArray* bytes)
-	    {
+            var array = new NativeArray
+            {
+                Length = pinnedArrays.Count,
+                Items = pinnedArrayPtrs.Ptr
+            };
+
+            return new PinnedObject(array, new[] { pinnedArrayPtrs });
+        }
+
+        public static unsafe byte[] ToMangedByteArray(NativeArray* bytes)
+        {
             var length = (*bytes).Length;
             var data = (*bytes).Items;
 
-	        var result = new byte[length];
-	        Marshal.Copy(data, result, 0, length);
+            var result = new byte[length];
+            Marshal.Copy(data, result, 0, length);
 
-	        return result;
-	    }
-	}
+            return result;
+        }
+    }
 }

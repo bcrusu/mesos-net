@@ -6,7 +6,7 @@ namespace mesosclr.Registry
 {
     internal class UniqueIdGenerator
     {
-        private static readonly ConcurrentDictionary<Type, Counter> CounterMap = new ConcurrentDictionary<Type,Counter>();
+        private static readonly ConcurrentDictionary<Type, Counter> CounterMap = new ConcurrentDictionary<Type, Counter>();
 
         public static long GetNextId<T>()
             where T : class
