@@ -109,6 +109,14 @@ namespace mesos
       get { return _value; }
       set { _value = value; }
     }
+    private mesos.ContainerID _parent = null;
+    [global::ProtoBuf.ProtoMember(2, IsRequired = false, Name=@"parent", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.ComponentModel.DefaultValue(null)]
+    public mesos.ContainerID parent
+    {
+      get { return _parent; }
+      set { _parent = value; }
+    }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
@@ -440,7 +448,16 @@ namespace mesos
       REVOCABLE_RESOURCES = 1,
             
       [global::ProtoBuf.ProtoEnum(Name=@"TASK_KILLING_STATE", Value=2)]
-      TASK_KILLING_STATE = 2
+      TASK_KILLING_STATE = 2,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"GPU_RESOURCES", Value=3)]
+      GPU_RESOURCES = 3,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"SHARED_RESOURCES", Value=4)]
+      SHARED_RESOURCES = 4,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"PARTITION_AWARE", Value=5)]
+      PARTITION_AWARE = 5
     }
   
     private global::ProtoBuf.IExtension extensionObject;
@@ -458,14 +475,6 @@ namespace mesos
   {
     public HealthCheck() {}
     
-    private mesos.HealthCheck.HTTP _http = null;
-    [global::ProtoBuf.ProtoMember(1, IsRequired = false, Name=@"http", DataFormat = global::ProtoBuf.DataFormat.Default)]
-    [global::System.ComponentModel.DefaultValue(null)]
-    public mesos.HealthCheck.HTTP http
-    {
-      get { return _http; }
-      set { _http = value; }
-    }
     private double _delay_seconds = (double)15;
     [global::ProtoBuf.ProtoMember(2, IsRequired = false, Name=@"delay_seconds", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
     [global::System.ComponentModel.DefaultValue((double)15)]
@@ -506,6 +515,14 @@ namespace mesos
       get { return _grace_period_seconds; }
       set { _grace_period_seconds = value; }
     }
+    private mesos.HealthCheck.Type _type = mesos.HealthCheck.Type.UNKNOWN;
+    [global::ProtoBuf.ProtoMember(8, IsRequired = false, Name=@"type", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    [global::System.ComponentModel.DefaultValue(mesos.HealthCheck.Type.UNKNOWN)]
+    public mesos.HealthCheck.Type type
+    {
+      get { return _type; }
+      set { _type = value; }
+    }
     private mesos.CommandInfo _command = null;
     [global::ProtoBuf.ProtoMember(7, IsRequired = false, Name=@"command", DataFormat = global::ProtoBuf.DataFormat.Default)]
     [global::System.ComponentModel.DefaultValue(null)]
@@ -514,11 +531,35 @@ namespace mesos
       get { return _command; }
       set { _command = value; }
     }
-  [global::ProtoBuf.ProtoContract(Name=@"HTTP")]
-  public partial class HTTP : global::ProtoBuf.IExtensible
+    private mesos.HealthCheck.HTTPCheckInfo _http = null;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = false, Name=@"http", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.ComponentModel.DefaultValue(null)]
+    public mesos.HealthCheck.HTTPCheckInfo http
+    {
+      get { return _http; }
+      set { _http = value; }
+    }
+    private mesos.HealthCheck.TCPCheckInfo _tcp = null;
+    [global::ProtoBuf.ProtoMember(9, IsRequired = false, Name=@"tcp", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.ComponentModel.DefaultValue(null)]
+    public mesos.HealthCheck.TCPCheckInfo tcp
+    {
+      get { return _tcp; }
+      set { _tcp = value; }
+    }
+  [global::ProtoBuf.ProtoContract(Name=@"HTTPCheckInfo")]
+  public partial class HTTPCheckInfo : global::ProtoBuf.IExtensible
   {
-    public HTTP() {}
+    public HTTPCheckInfo() {}
     
+    private string _scheme = "";
+    [global::ProtoBuf.ProtoMember(3, IsRequired = false, Name=@"scheme", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.ComponentModel.DefaultValue("")]
+    public string scheme
+    {
+      get { return _scheme; }
+      set { _scheme = value; }
+    }
     private uint _port;
     [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"port", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
     public uint port
@@ -526,9 +567,9 @@ namespace mesos
       get { return _port; }
       set { _port = value; }
     }
-    private string _path = @"/";
+    private string _path = "";
     [global::ProtoBuf.ProtoMember(2, IsRequired = false, Name=@"path", DataFormat = global::ProtoBuf.DataFormat.Default)]
-    [global::System.ComponentModel.DefaultValue(@"/")]
+    [global::System.ComponentModel.DefaultValue("")]
     public string path
     {
       get { return _path; }
@@ -545,6 +586,40 @@ namespace mesos
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
   }
+  
+  [global::ProtoBuf.ProtoContract(Name=@"TCPCheckInfo")]
+  public partial class TCPCheckInfo : global::ProtoBuf.IExtensible
+  {
+    public TCPCheckInfo() {}
+    
+    private uint _port;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"port", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public uint port
+    {
+      get { return _port; }
+      set { _port = value; }
+    }
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
+    [global::ProtoBuf.ProtoContract(Name=@"Type")]
+    public enum Type
+    {
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"UNKNOWN", Value=0)]
+      UNKNOWN = 0,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"COMMAND", Value=1)]
+      COMMAND = 1,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"HTTP", Value=2)]
+      HTTP = 2,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"TCP", Value=3)]
+      TCP = 3
+    }
   
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
@@ -679,6 +754,14 @@ namespace mesos
   {
     public ExecutorInfo() {}
     
+    private mesos.ExecutorInfo.Type _type = mesos.ExecutorInfo.Type.UNKNOWN;
+    [global::ProtoBuf.ProtoMember(15, IsRequired = false, Name=@"type", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    [global::System.ComponentModel.DefaultValue(mesos.ExecutorInfo.Type.UNKNOWN)]
+    public mesos.ExecutorInfo.Type type
+    {
+      get { return _type; }
+      set { _type = value; }
+    }
     private mesos.ExecutorID _executor_id;
     [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"executor_id", DataFormat = global::ProtoBuf.DataFormat.Default)]
     public mesos.ExecutorID executor_id
@@ -694,8 +777,9 @@ namespace mesos
       get { return _framework_id; }
       set { _framework_id = value; }
     }
-    private mesos.CommandInfo _command;
-    [global::ProtoBuf.ProtoMember(7, IsRequired = true, Name=@"command", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    private mesos.CommandInfo _command = null;
+    [global::ProtoBuf.ProtoMember(7, IsRequired = false, Name=@"command", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.ComponentModel.DefaultValue(null)]
     public mesos.CommandInfo command
     {
       get { return _command; }
@@ -764,6 +848,20 @@ namespace mesos
       get { return _labels; }
       set { _labels = value; }
     }
+    [global::ProtoBuf.ProtoContract(Name=@"Type")]
+    public enum Type
+    {
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"UNKNOWN", Value=0)]
+      UNKNOWN = 0,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"DEFAULT", Value=1)]
+      DEFAULT = 1,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"CUSTOM", Value=2)]
+      CUSTOM = 2
+    }
+  
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
@@ -1176,6 +1274,14 @@ namespace mesos
       get { return _revocable; }
       set { _revocable = value; }
     }
+    private mesos.Resource.SharedInfo _shared = null;
+    [global::ProtoBuf.ProtoMember(10, IsRequired = false, Name=@"shared", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.ComponentModel.DefaultValue(null)]
+    public mesos.Resource.SharedInfo shared
+    {
+      get { return _shared; }
+      set { _shared = value; }
+    }
   [global::ProtoBuf.ProtoContract(Name=@"ReservationInfo")]
   public partial class ReservationInfo : global::ProtoBuf.IExtensible
   {
@@ -1343,6 +1449,16 @@ namespace mesos
   public partial class RevocableInfo : global::ProtoBuf.IExtensible
   {
     public RevocableInfo() {}
+    
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
+  [global::ProtoBuf.ProtoContract(Name=@"SharedInfo")]
+  public partial class SharedInfo : global::ProtoBuf.IExtensible
+  {
+    public SharedInfo() {}
     
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
@@ -3062,8 +3178,9 @@ namespace mesos
   {
     public Operation() {}
     
-    private mesos.Offer.Operation.Type _type;
-    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"type", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    private mesos.Offer.Operation.Type _type = mesos.Offer.Operation.Type.UNKNOWN;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = false, Name=@"type", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    [global::System.ComponentModel.DefaultValue(mesos.Offer.Operation.Type.UNKNOWN)]
     public mesos.Offer.Operation.Type type
     {
       get { return _type; }
@@ -3076,6 +3193,14 @@ namespace mesos
     {
       get { return _launch; }
       set { _launch = value; }
+    }
+    private mesos.Offer.Operation.LaunchGroup _launch_group = null;
+    [global::ProtoBuf.ProtoMember(7, IsRequired = false, Name=@"launch_group", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.ComponentModel.DefaultValue(null)]
+    public mesos.Offer.Operation.LaunchGroup launch_group
+    {
+      get { return _launch_group; }
+      set { _launch_group = value; }
     }
     private mesos.Offer.Operation.Reserve _reserve = null;
     [global::ProtoBuf.ProtoMember(3, IsRequired = false, Name=@"reserve", DataFormat = global::ProtoBuf.DataFormat.Default)]
@@ -3121,6 +3246,30 @@ namespace mesos
       get { return _task_infos; }
     }
   
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
+  [global::ProtoBuf.ProtoContract(Name=@"LaunchGroup")]
+  public partial class LaunchGroup : global::ProtoBuf.IExtensible
+  {
+    public LaunchGroup() {}
+    
+    private mesos.ExecutorInfo _executor;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"executor", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public mesos.ExecutorInfo executor
+    {
+      get { return _executor; }
+      set { _executor = value; }
+    }
+    private mesos.TaskGroupInfo _task_group;
+    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"task_group", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public mesos.TaskGroupInfo task_group
+    {
+      get { return _task_group; }
+      set { _task_group = value; }
+    }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
@@ -3198,8 +3347,14 @@ namespace mesos
     public enum Type
     {
             
+      [global::ProtoBuf.ProtoEnum(Name=@"UNKNOWN", Value=0)]
+      UNKNOWN = 0,
+            
       [global::ProtoBuf.ProtoEnum(Name=@"LAUNCH", Value=1)]
       LAUNCH = 1,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"LAUNCH_GROUP", Value=6)]
+      LAUNCH_GROUP = 6,
             
       [global::ProtoBuf.ProtoEnum(Name=@"RESERVE", Value=2)]
       RESERVE = 2,
@@ -3380,6 +3535,138 @@ namespace mesos
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
   }
   
+  [global::ProtoBuf.ProtoContract(Name=@"TaskGroupInfo")]
+  public partial class TaskGroupInfo : global::ProtoBuf.IExtensible
+  {
+    public TaskGroupInfo() {}
+    
+    private readonly global::System.Collections.Generic.List<mesos.TaskInfo> _tasks = new global::System.Collections.Generic.List<mesos.TaskInfo>();
+    [global::ProtoBuf.ProtoMember(1, Name=@"tasks", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public global::System.Collections.Generic.List<mesos.TaskInfo> tasks
+    {
+      get { return _tasks; }
+    }
+  
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
+  [global::ProtoBuf.ProtoContract(Name=@"Task")]
+  public partial class Task : global::ProtoBuf.IExtensible
+  {
+    public Task() {}
+    
+    private string _name;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"name", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public string name
+    {
+      get { return _name; }
+      set { _name = value; }
+    }
+    private mesos.TaskID _task_id;
+    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"task_id", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public mesos.TaskID task_id
+    {
+      get { return _task_id; }
+      set { _task_id = value; }
+    }
+    private mesos.FrameworkID _framework_id;
+    [global::ProtoBuf.ProtoMember(3, IsRequired = true, Name=@"framework_id", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public mesos.FrameworkID framework_id
+    {
+      get { return _framework_id; }
+      set { _framework_id = value; }
+    }
+    private mesos.ExecutorID _executor_id = null;
+    [global::ProtoBuf.ProtoMember(4, IsRequired = false, Name=@"executor_id", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.ComponentModel.DefaultValue(null)]
+    public mesos.ExecutorID executor_id
+    {
+      get { return _executor_id; }
+      set { _executor_id = value; }
+    }
+    private mesos.SlaveID _slave_id;
+    [global::ProtoBuf.ProtoMember(5, IsRequired = true, Name=@"slave_id", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public mesos.SlaveID slave_id
+    {
+      get { return _slave_id; }
+      set { _slave_id = value; }
+    }
+    private mesos.TaskState _state;
+    [global::ProtoBuf.ProtoMember(6, IsRequired = true, Name=@"state", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public mesos.TaskState state
+    {
+      get { return _state; }
+      set { _state = value; }
+    }
+    private readonly global::System.Collections.Generic.List<mesos.Resource> _resources = new global::System.Collections.Generic.List<mesos.Resource>();
+    [global::ProtoBuf.ProtoMember(7, Name=@"resources", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public global::System.Collections.Generic.List<mesos.Resource> resources
+    {
+      get { return _resources; }
+    }
+  
+    private readonly global::System.Collections.Generic.List<mesos.TaskStatus> _statuses = new global::System.Collections.Generic.List<mesos.TaskStatus>();
+    [global::ProtoBuf.ProtoMember(8, Name=@"statuses", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public global::System.Collections.Generic.List<mesos.TaskStatus> statuses
+    {
+      get { return _statuses; }
+    }
+  
+    private mesos.TaskState _status_update_state = mesos.TaskState.TASK_STAGING;
+    [global::ProtoBuf.ProtoMember(9, IsRequired = false, Name=@"status_update_state", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    [global::System.ComponentModel.DefaultValue(mesos.TaskState.TASK_STAGING)]
+    public mesos.TaskState status_update_state
+    {
+      get { return _status_update_state; }
+      set { _status_update_state = value; }
+    }
+    private byte[] _status_update_uuid = null;
+    [global::ProtoBuf.ProtoMember(10, IsRequired = false, Name=@"status_update_uuid", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.ComponentModel.DefaultValue(null)]
+    public byte[] status_update_uuid
+    {
+      get { return _status_update_uuid; }
+      set { _status_update_uuid = value; }
+    }
+    private mesos.Labels _labels = null;
+    [global::ProtoBuf.ProtoMember(11, IsRequired = false, Name=@"labels", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.ComponentModel.DefaultValue(null)]
+    public mesos.Labels labels
+    {
+      get { return _labels; }
+      set { _labels = value; }
+    }
+    private mesos.DiscoveryInfo _discovery = null;
+    [global::ProtoBuf.ProtoMember(12, IsRequired = false, Name=@"discovery", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.ComponentModel.DefaultValue(null)]
+    public mesos.DiscoveryInfo discovery
+    {
+      get { return _discovery; }
+      set { _discovery = value; }
+    }
+    private mesos.ContainerInfo _container = null;
+    [global::ProtoBuf.ProtoMember(13, IsRequired = false, Name=@"container", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.ComponentModel.DefaultValue(null)]
+    public mesos.ContainerInfo container
+    {
+      get { return _container; }
+      set { _container = value; }
+    }
+    private string _user = "";
+    [global::ProtoBuf.ProtoMember(14, IsRequired = false, Name=@"user", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.ComponentModel.DefaultValue("")]
+    public string user
+    {
+      get { return _user; }
+      set { _user = value; }
+    }
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
   [global::ProtoBuf.ProtoContract(Name=@"TaskStatus")]
   public partial class TaskStatus : global::ProtoBuf.IExtensible
   {
@@ -3487,6 +3774,14 @@ namespace mesos
       get { return _container_status; }
       set { _container_status = value; }
     }
+    private mesos.TimeInfo _unreachable_time = null;
+    [global::ProtoBuf.ProtoMember(14, IsRequired = false, Name=@"unreachable_time", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.ComponentModel.DefaultValue(null)]
+    public mesos.TimeInfo unreachable_time
+    {
+      get { return _unreachable_time; }
+      set { _unreachable_time = value; }
+    }
     [global::ProtoBuf.ProtoContract(Name=@"Source")]
     public enum Source
     {
@@ -3570,6 +3865,12 @@ namespace mesos
             
       [global::ProtoBuf.ProtoEnum(Name=@"REASON_SLAVE_UNKNOWN", Value=13)]
       REASON_SLAVE_UNKNOWN = 13,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"REASON_TASK_GROUP_INVALID", Value=25)]
+      REASON_TASK_GROUP_INVALID = 25,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"REASON_TASK_GROUP_UNAUTHORIZED", Value=26)]
+      REASON_TASK_GROUP_UNAUTHORIZED = 26,
             
       [global::ProtoBuf.ProtoEnum(Name=@"REASON_TASK_INVALID", Value=14)]
       REASON_TASK_INVALID = 14,
@@ -3822,6 +4123,14 @@ namespace mesos
       get { return _docker; }
       set { _docker = value; }
     }
+    private bool _cached = (bool)true;
+    [global::ProtoBuf.ProtoMember(4, IsRequired = false, Name=@"cached", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.ComponentModel.DefaultValue((bool)true)]
+    public bool cached
+    {
+      get { return _cached; }
+      set { _cached = value; }
+    }
   [global::ProtoBuf.ProtoContract(Name=@"Appc")]
   public partial class Appc : global::ProtoBuf.IExtensible
   {
@@ -3960,13 +4269,22 @@ namespace mesos
       get { return _docker_volume; }
       set { _docker_volume = value; }
     }
+    private mesos.Volume.Source.SandboxPath _sandbox_path = null;
+    [global::ProtoBuf.ProtoMember(3, IsRequired = false, Name=@"sandbox_path", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.ComponentModel.DefaultValue(null)]
+    public mesos.Volume.Source.SandboxPath sandbox_path
+    {
+      get { return _sandbox_path; }
+      set { _sandbox_path = value; }
+    }
   [global::ProtoBuf.ProtoContract(Name=@"DockerVolume")]
   public partial class DockerVolume : global::ProtoBuf.IExtensible
   {
     public DockerVolume() {}
     
-    private string _driver;
-    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"driver", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    private string _driver = "";
+    [global::ProtoBuf.ProtoMember(1, IsRequired = false, Name=@"driver", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.ComponentModel.DefaultValue("")]
     public string driver
     {
       get { return _driver; }
@@ -3992,6 +4310,45 @@ namespace mesos
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
   }
   
+  [global::ProtoBuf.ProtoContract(Name=@"SandboxPath")]
+  public partial class SandboxPath : global::ProtoBuf.IExtensible
+  {
+    public SandboxPath() {}
+    
+    private mesos.Volume.Source.SandboxPath.Type _type = mesos.Volume.Source.SandboxPath.Type.UNKNOWN;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = false, Name=@"type", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    [global::System.ComponentModel.DefaultValue(mesos.Volume.Source.SandboxPath.Type.UNKNOWN)]
+    public mesos.Volume.Source.SandboxPath.Type type
+    {
+      get { return _type; }
+      set { _type = value; }
+    }
+    private string _path;
+    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"path", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public string path
+    {
+      get { return _path; }
+      set { _path = value; }
+    }
+    [global::ProtoBuf.ProtoContract(Name=@"Type")]
+    public enum Type
+    {
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"UNKNOWN", Value=0)]
+      UNKNOWN = 0,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"SELF", Value=1)]
+      SELF = 1,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"PARENT", Value=2)]
+      PARENT = 2
+    }
+  
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
     [global::ProtoBuf.ProtoContract(Name=@"Type")]
     public enum Type
     {
@@ -4000,7 +4357,10 @@ namespace mesos
       UNKNOWN = 0,
             
       [global::ProtoBuf.ProtoEnum(Name=@"DOCKER_VOLUME", Value=1)]
-      DOCKER_VOLUME = 1
+      DOCKER_VOLUME = 1,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"SANDBOX_PATH", Value=2)]
+      SANDBOX_PATH = 2
     }
   
     private global::ProtoBuf.IExtension extensionObject;
@@ -4044,22 +4404,6 @@ namespace mesos
       get { return _name; }
       set { _name = value; }
     }
-    private mesos.NetworkInfo.Protocol _protocol = mesos.NetworkInfo.Protocol.IPv4;
-    [global::System.Obsolete, global::ProtoBuf.ProtoMember(1, IsRequired = false, Name=@"protocol", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    [global::System.ComponentModel.DefaultValue(mesos.NetworkInfo.Protocol.IPv4)]
-    public mesos.NetworkInfo.Protocol protocol
-    {
-      get { return _protocol; }
-      set { _protocol = value; }
-    }
-    private string _ip_address = "";
-    [global::System.Obsolete, global::ProtoBuf.ProtoMember(2, IsRequired = false, Name=@"ip_address", DataFormat = global::ProtoBuf.DataFormat.Default)]
-    [global::System.ComponentModel.DefaultValue("")]
-    public string ip_address
-    {
-      get { return _ip_address; }
-      set { _ip_address = value; }
-    }
     private readonly global::System.Collections.Generic.List<string> _groups = new global::System.Collections.Generic.List<string>();
     [global::ProtoBuf.ProtoMember(3, Name=@"groups", DataFormat = global::ProtoBuf.DataFormat.Default)]
     public global::System.Collections.Generic.List<string> groups
@@ -4075,6 +4419,13 @@ namespace mesos
       get { return _labels; }
       set { _labels = value; }
     }
+    private readonly global::System.Collections.Generic.List<mesos.NetworkInfo.PortMapping> _port_mappings = new global::System.Collections.Generic.List<mesos.NetworkInfo.PortMapping>();
+    [global::ProtoBuf.ProtoMember(7, Name=@"port_mappings", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public global::System.Collections.Generic.List<mesos.NetworkInfo.PortMapping> port_mappings
+    {
+      get { return _port_mappings; }
+    }
+  
   [global::ProtoBuf.ProtoContract(Name=@"IPAddress")]
   public partial class IPAddress : global::ProtoBuf.IExtensible
   {
@@ -4101,6 +4452,38 @@ namespace mesos
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
   }
   
+  [global::ProtoBuf.ProtoContract(Name=@"PortMapping")]
+  public partial class PortMapping : global::ProtoBuf.IExtensible
+  {
+    public PortMapping() {}
+    
+    private uint _host_port;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"host_port", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public uint host_port
+    {
+      get { return _host_port; }
+      set { _host_port = value; }
+    }
+    private uint _container_port;
+    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"container_port", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public uint container_port
+    {
+      get { return _container_port; }
+      set { _container_port = value; }
+    }
+    private string _protocol = "";
+    [global::ProtoBuf.ProtoMember(3, IsRequired = false, Name=@"protocol", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.ComponentModel.DefaultValue("")]
+    public string protocol
+    {
+      get { return _protocol; }
+      set { _protocol = value; }
+    }
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
     [global::ProtoBuf.ProtoContract(Name=@"Protocol")]
     public enum Protocol
     {
@@ -4112,6 +4495,163 @@ namespace mesos
       IPv6 = 2
     }
   
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
+  [global::ProtoBuf.ProtoContract(Name=@"CapabilityInfo")]
+  public partial class CapabilityInfo : global::ProtoBuf.IExtensible
+  {
+    public CapabilityInfo() {}
+    
+    private readonly global::System.Collections.Generic.List<mesos.CapabilityInfo.Capability> _capabilities = new global::System.Collections.Generic.List<mesos.CapabilityInfo.Capability>();
+    [global::ProtoBuf.ProtoMember(1, Name=@"capabilities", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public global::System.Collections.Generic.List<mesos.CapabilityInfo.Capability> capabilities
+    {
+      get { return _capabilities; }
+    }
+  
+    [global::ProtoBuf.ProtoContract(Name=@"Capability")]
+    public enum Capability
+    {
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"UNKNOWN", Value=0)]
+      UNKNOWN = 0,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"CHOWN", Value=1000)]
+      CHOWN = 1000,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"DAC_OVERRIDE", Value=1001)]
+      DAC_OVERRIDE = 1001,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"DAC_READ_SEARCH", Value=1002)]
+      DAC_READ_SEARCH = 1002,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"FOWNER", Value=1003)]
+      FOWNER = 1003,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"FSETID", Value=1004)]
+      FSETID = 1004,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"KILL", Value=1005)]
+      KILL = 1005,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"SETGID", Value=1006)]
+      SETGID = 1006,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"SETUID", Value=1007)]
+      SETUID = 1007,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"SETPCAP", Value=1008)]
+      SETPCAP = 1008,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"LINUX_IMMUTABLE", Value=1009)]
+      LINUX_IMMUTABLE = 1009,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"NET_BIND_SERVICE", Value=1010)]
+      NET_BIND_SERVICE = 1010,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"NET_BROADCAST", Value=1011)]
+      NET_BROADCAST = 1011,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"NET_ADMIN", Value=1012)]
+      NET_ADMIN = 1012,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"NET_RAW", Value=1013)]
+      NET_RAW = 1013,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"IPC_LOCK", Value=1014)]
+      IPC_LOCK = 1014,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"IPC_OWNER", Value=1015)]
+      IPC_OWNER = 1015,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"SYS_MODULE", Value=1016)]
+      SYS_MODULE = 1016,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"SYS_RAWIO", Value=1017)]
+      SYS_RAWIO = 1017,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"SYS_CHROOT", Value=1018)]
+      SYS_CHROOT = 1018,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"SYS_PTRACE", Value=1019)]
+      SYS_PTRACE = 1019,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"SYS_PACCT", Value=1020)]
+      SYS_PACCT = 1020,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"SYS_ADMIN", Value=1021)]
+      SYS_ADMIN = 1021,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"SYS_BOOT", Value=1022)]
+      SYS_BOOT = 1022,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"SYS_NICE", Value=1023)]
+      SYS_NICE = 1023,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"SYS_RESOURCE", Value=1024)]
+      SYS_RESOURCE = 1024,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"SYS_TIME", Value=1025)]
+      SYS_TIME = 1025,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"SYS_TTY_CONFIG", Value=1026)]
+      SYS_TTY_CONFIG = 1026,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"MKNOD", Value=1027)]
+      MKNOD = 1027,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"LEASE", Value=1028)]
+      LEASE = 1028,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"AUDIT_WRITE", Value=1029)]
+      AUDIT_WRITE = 1029,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"AUDIT_CONTROL", Value=1030)]
+      AUDIT_CONTROL = 1030,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"SETFCAP", Value=1031)]
+      SETFCAP = 1031,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"MAC_OVERRIDE", Value=1032)]
+      MAC_OVERRIDE = 1032,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"MAC_ADMIN", Value=1033)]
+      MAC_ADMIN = 1033,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"SYSLOG", Value=1034)]
+      SYSLOG = 1034,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"WAKE_ALARM", Value=1035)]
+      WAKE_ALARM = 1035,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"BLOCK_SUSPEND", Value=1036)]
+      BLOCK_SUSPEND = 1036,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"AUDIT_READ", Value=1037)]
+      AUDIT_READ = 1037
+    }
+  
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
+  [global::ProtoBuf.ProtoContract(Name=@"LinuxInfo")]
+  public partial class LinuxInfo : global::ProtoBuf.IExtensible
+  {
+    public LinuxInfo() {}
+    
+    private mesos.CapabilityInfo _capability_info = null;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = false, Name=@"capability_info", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.ComponentModel.DefaultValue(null)]
+    public mesos.CapabilityInfo capability_info
+    {
+      get { return _capability_info; }
+      set { _capability_info = value; }
+    }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
@@ -4167,6 +4707,14 @@ namespace mesos
       get { return _network_infos; }
     }
   
+    private mesos.LinuxInfo _linux_info = null;
+    [global::ProtoBuf.ProtoMember(8, IsRequired = false, Name=@"linux_info", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.ComponentModel.DefaultValue(null)]
+    public mesos.LinuxInfo linux_info
+    {
+      get { return _linux_info; }
+      set { _linux_info = value; }
+    }
   [global::ProtoBuf.ProtoContract(Name=@"DockerInfo")]
   public partial class DockerInfo : global::ProtoBuf.IExtensible
   {
@@ -4179,9 +4727,9 @@ namespace mesos
       get { return _image; }
       set { _image = value; }
     }
-    private mesos.ContainerInfo.DockerInfo.Network _network = global::mesos.ContainerInfo.DockerInfo.Network.HOST;
+    private mesos.ContainerInfo.DockerInfo.Network _network = ContainerInfo.DockerInfo.Network.HOST;
     [global::ProtoBuf.ProtoMember(2, IsRequired = false, Name=@"network", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    [global::System.ComponentModel.DefaultValue(global::mesos.ContainerInfo.DockerInfo.Network.HOST)]
+    [global::System.ComponentModel.DefaultValue(ContainerInfo.DockerInfo.Network.HOST)]
     public mesos.ContainerInfo.DockerInfo.Network network
     {
       get { return _network; }
@@ -4218,7 +4766,7 @@ namespace mesos
       set { _force_pull_image = value; }
     }
     private string _volume_driver = "";
-    [global::ProtoBuf.ProtoMember(7, IsRequired = false, Name=@"volume_driver", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.Obsolete, global::ProtoBuf.ProtoMember(7, IsRequired = false, Name=@"volume_driver", DataFormat = global::ProtoBuf.DataFormat.Default)]
     [global::System.ComponentModel.DefaultValue("")]
     public string volume_driver
     {
@@ -4332,6 +4880,14 @@ namespace mesos
     {
       get { return _cgroup_info; }
       set { _cgroup_info = value; }
+    }
+    private uint _executor_pid = default(uint);
+    [global::ProtoBuf.ProtoMember(3, IsRequired = false, Name=@"executor_pid", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    [global::System.ComponentModel.DefaultValue(default(uint))]
+    public uint executor_pid
+    {
+      get { return _executor_pid; }
+      set { _executor_pid = value; }
     }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
@@ -4586,6 +5142,224 @@ namespace mesos
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
   }
   
+  [global::ProtoBuf.ProtoContract(Name=@"VersionInfo")]
+  public partial class VersionInfo : global::ProtoBuf.IExtensible
+  {
+    public VersionInfo() {}
+    
+    private string _version;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"version", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public string version
+    {
+      get { return _version; }
+      set { _version = value; }
+    }
+    private string _build_date = "";
+    [global::ProtoBuf.ProtoMember(2, IsRequired = false, Name=@"build_date", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.ComponentModel.DefaultValue("")]
+    public string build_date
+    {
+      get { return _build_date; }
+      set { _build_date = value; }
+    }
+    private double _build_time = default(double);
+    [global::ProtoBuf.ProtoMember(3, IsRequired = false, Name=@"build_time", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    [global::System.ComponentModel.DefaultValue(default(double))]
+    public double build_time
+    {
+      get { return _build_time; }
+      set { _build_time = value; }
+    }
+    private string _build_user = "";
+    [global::ProtoBuf.ProtoMember(4, IsRequired = false, Name=@"build_user", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.ComponentModel.DefaultValue("")]
+    public string build_user
+    {
+      get { return _build_user; }
+      set { _build_user = value; }
+    }
+    private string _git_sha = "";
+    [global::ProtoBuf.ProtoMember(5, IsRequired = false, Name=@"git_sha", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.ComponentModel.DefaultValue("")]
+    public string git_sha
+    {
+      get { return _git_sha; }
+      set { _git_sha = value; }
+    }
+    private string _git_branch = "";
+    [global::ProtoBuf.ProtoMember(6, IsRequired = false, Name=@"git_branch", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.ComponentModel.DefaultValue("")]
+    public string git_branch
+    {
+      get { return _git_branch; }
+      set { _git_branch = value; }
+    }
+    private string _git_tag = "";
+    [global::ProtoBuf.ProtoMember(7, IsRequired = false, Name=@"git_tag", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.ComponentModel.DefaultValue("")]
+    public string git_tag
+    {
+      get { return _git_tag; }
+      set { _git_tag = value; }
+    }
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
+  [global::ProtoBuf.ProtoContract(Name=@"Flag")]
+  public partial class Flag : global::ProtoBuf.IExtensible
+  {
+    public Flag() {}
+    
+    private string _name;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"name", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public string name
+    {
+      get { return _name; }
+      set { _name = value; }
+    }
+    private string _value = "";
+    [global::ProtoBuf.ProtoMember(2, IsRequired = false, Name=@"value", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.ComponentModel.DefaultValue("")]
+    public string value
+    {
+      get { return _value; }
+      set { _value = value; }
+    }
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
+  [global::ProtoBuf.ProtoContract(Name=@"Role")]
+  public partial class Role : global::ProtoBuf.IExtensible
+  {
+    public Role() {}
+    
+    private string _name;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"name", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public string name
+    {
+      get { return _name; }
+      set { _name = value; }
+    }
+    private double _weight;
+    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"weight", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public double weight
+    {
+      get { return _weight; }
+      set { _weight = value; }
+    }
+    private readonly global::System.Collections.Generic.List<mesos.FrameworkID> _frameworks = new global::System.Collections.Generic.List<mesos.FrameworkID>();
+    [global::ProtoBuf.ProtoMember(3, Name=@"frameworks", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public global::System.Collections.Generic.List<mesos.FrameworkID> frameworks
+    {
+      get { return _frameworks; }
+    }
+  
+    private readonly global::System.Collections.Generic.List<mesos.Resource> _resources = new global::System.Collections.Generic.List<mesos.Resource>();
+    [global::ProtoBuf.ProtoMember(4, Name=@"resources", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public global::System.Collections.Generic.List<mesos.Resource> resources
+    {
+      get { return _resources; }
+    }
+  
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
+  [global::ProtoBuf.ProtoContract(Name=@"Metric")]
+  public partial class Metric : global::ProtoBuf.IExtensible
+  {
+    public Metric() {}
+    
+    private string _name;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"name", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public string name
+    {
+      get { return _name; }
+      set { _name = value; }
+    }
+    private double _value = default(double);
+    [global::ProtoBuf.ProtoMember(2, IsRequired = false, Name=@"value", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    [global::System.ComponentModel.DefaultValue(default(double))]
+    public double value
+    {
+      get { return _value; }
+      set { _value = value; }
+    }
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
+  [global::ProtoBuf.ProtoContract(Name=@"FileInfo")]
+  public partial class FileInfo : global::ProtoBuf.IExtensible
+  {
+    public FileInfo() {}
+    
+    private string _path;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"path", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public string path
+    {
+      get { return _path; }
+      set { _path = value; }
+    }
+    private int _nlink = default(int);
+    [global::ProtoBuf.ProtoMember(2, IsRequired = false, Name=@"nlink", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    [global::System.ComponentModel.DefaultValue(default(int))]
+    public int nlink
+    {
+      get { return _nlink; }
+      set { _nlink = value; }
+    }
+    private ulong _size = default(ulong);
+    [global::ProtoBuf.ProtoMember(3, IsRequired = false, Name=@"size", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    [global::System.ComponentModel.DefaultValue(default(ulong))]
+    public ulong size
+    {
+      get { return _size; }
+      set { _size = value; }
+    }
+    private mesos.TimeInfo _mtime = null;
+    [global::ProtoBuf.ProtoMember(4, IsRequired = false, Name=@"mtime", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.ComponentModel.DefaultValue(null)]
+    public mesos.TimeInfo mtime
+    {
+      get { return _mtime; }
+      set { _mtime = value; }
+    }
+    private uint _mode = default(uint);
+    [global::ProtoBuf.ProtoMember(5, IsRequired = false, Name=@"mode", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    [global::System.ComponentModel.DefaultValue(default(uint))]
+    public uint mode
+    {
+      get { return _mode; }
+      set { _mode = value; }
+    }
+    private string _uid = "";
+    [global::ProtoBuf.ProtoMember(6, IsRequired = false, Name=@"uid", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.ComponentModel.DefaultValue("")]
+    public string uid
+    {
+      get { return _uid; }
+      set { _uid = value; }
+    }
+    private string _gid = "";
+    [global::ProtoBuf.ProtoMember(7, IsRequired = false, Name=@"gid", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.ComponentModel.DefaultValue("")]
+    public string gid
+    {
+      get { return _gid; }
+      set { _gid = value; }
+    }
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
     [global::ProtoBuf.ProtoContract(Name=@"Status")]
     public enum Status
     {
@@ -4628,11 +5402,26 @@ namespace mesos
       [global::ProtoBuf.ProtoEnum(Name=@"TASK_KILLED", Value=4)]
       TASK_KILLED = 4,
             
+      [global::ProtoBuf.ProtoEnum(Name=@"TASK_ERROR", Value=7)]
+      TASK_ERROR = 7,
+            
       [global::ProtoBuf.ProtoEnum(Name=@"TASK_LOST", Value=5)]
       TASK_LOST = 5,
             
-      [global::ProtoBuf.ProtoEnum(Name=@"TASK_ERROR", Value=7)]
-      TASK_ERROR = 7
+      [global::ProtoBuf.ProtoEnum(Name=@"TASK_DROPPED", Value=9)]
+      TASK_DROPPED = 9,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"TASK_UNREACHABLE", Value=10)]
+      TASK_UNREACHABLE = 10,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"TASK_GONE", Value=11)]
+      TASK_GONE = 11,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"TASK_GONE_BY_OPERATOR", Value=12)]
+      TASK_GONE_BY_OPERATOR = 12,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"TASK_UNKNOWN", Value=13)]
+      TASK_UNKNOWN = 13
     }
   
 }

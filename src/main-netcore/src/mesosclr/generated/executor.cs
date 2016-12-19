@@ -50,6 +50,14 @@ namespace mesos.executor
       get { return _launch; }
       set { _launch = value; }
     }
+    private mesos.executor.Event.LaunchGroup _launch_group = null;
+    [global::ProtoBuf.ProtoMember(8, IsRequired = false, Name=@"launch_group", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.ComponentModel.DefaultValue(null)]
+    public mesos.executor.Event.LaunchGroup launch_group
+    {
+      get { return _launch_group; }
+      set { _launch_group = value; }
+    }
     private mesos.executor.Event.Kill _kill = null;
     [global::ProtoBuf.ProtoMember(5, IsRequired = false, Name=@"kill", DataFormat = global::ProtoBuf.DataFormat.Default)]
     [global::System.ComponentModel.DefaultValue(null)]
@@ -100,6 +108,14 @@ namespace mesos.executor
       get { return _slave_info; }
       set { _slave_info = value; }
     }
+    private mesos.ContainerID _container_id = null;
+    [global::ProtoBuf.ProtoMember(4, IsRequired = false, Name=@"container_id", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.ComponentModel.DefaultValue(null)]
+    public mesos.ContainerID container_id
+    {
+      get { return _container_id; }
+      set { _container_id = value; }
+    }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
@@ -116,6 +132,23 @@ namespace mesos.executor
     {
       get { return _task; }
       set { _task = value; }
+    }
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
+  [global::ProtoBuf.ProtoContract(Name=@"LaunchGroup")]
+  public partial class LaunchGroup : global::ProtoBuf.IExtensible
+  {
+    public LaunchGroup() {}
+    
+    private mesos.TaskGroupInfo _task_group;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"task_group", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public mesos.TaskGroupInfo task_group
+    {
+      get { return _task_group; }
+      set { _task_group = value; }
     }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
@@ -217,6 +250,9 @@ namespace mesos.executor
             
       [global::ProtoBuf.ProtoEnum(Name=@"LAUNCH", Value=2)]
       LAUNCH = 2,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"LAUNCH_GROUP", Value=8)]
+      LAUNCH_GROUP = 8,
             
       [global::ProtoBuf.ProtoEnum(Name=@"KILL", Value=3)]
       KILL = 3,

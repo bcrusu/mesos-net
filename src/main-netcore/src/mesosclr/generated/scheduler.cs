@@ -42,6 +42,14 @@ namespace mesos.scheduler
       get { return _offers; }
       set { _offers = value; }
     }
+    private mesos.scheduler.Event.InverseOffers _inverse_offers = null;
+    [global::ProtoBuf.ProtoMember(9, IsRequired = false, Name=@"inverse_offers", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.ComponentModel.DefaultValue(null)]
+    public mesos.scheduler.Event.InverseOffers inverse_offers
+    {
+      get { return _inverse_offers; }
+      set { _inverse_offers = value; }
+    }
     private mesos.scheduler.Event.Rescind _rescind = null;
     [global::ProtoBuf.ProtoMember(4, IsRequired = false, Name=@"rescind", DataFormat = global::ProtoBuf.DataFormat.Default)]
     [global::System.ComponentModel.DefaultValue(null)]
@@ -49,6 +57,14 @@ namespace mesos.scheduler
     {
       get { return _rescind; }
       set { _rescind = value; }
+    }
+    private mesos.scheduler.Event.RescindInverseOffer _rescind_inverse_offer = null;
+    [global::ProtoBuf.ProtoMember(10, IsRequired = false, Name=@"rescind_inverse_offer", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.ComponentModel.DefaultValue(null)]
+    public mesos.scheduler.Event.RescindInverseOffer rescind_inverse_offer
+    {
+      get { return _rescind_inverse_offer; }
+      set { _rescind_inverse_offer = value; }
     }
     private mesos.scheduler.Event.Update _update = null;
     [global::ProtoBuf.ProtoMember(5, IsRequired = false, Name=@"update", DataFormat = global::ProtoBuf.DataFormat.Default)]
@@ -102,6 +118,14 @@ namespace mesos.scheduler
       get { return _heartbeat_interval_seconds; }
       set { _heartbeat_interval_seconds = value; }
     }
+    private mesos.MasterInfo _master_info = null;
+    [global::ProtoBuf.ProtoMember(3, IsRequired = false, Name=@"master_info", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.ComponentModel.DefaultValue(null)]
+    public mesos.MasterInfo master_info
+    {
+      get { return _master_info; }
+      set { _master_info = value; }
+    }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
@@ -119,8 +143,18 @@ namespace mesos.scheduler
       get { return _offers; }
     }
   
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
+  [global::ProtoBuf.ProtoContract(Name=@"InverseOffers")]
+  public partial class InverseOffers : global::ProtoBuf.IExtensible
+  {
+    public InverseOffers() {}
+    
     private readonly global::System.Collections.Generic.List<mesos.InverseOffer> _inverse_offers = new global::System.Collections.Generic.List<mesos.InverseOffer>();
-    [global::ProtoBuf.ProtoMember(2, Name=@"inverse_offers", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::ProtoBuf.ProtoMember(1, Name=@"inverse_offers", DataFormat = global::ProtoBuf.DataFormat.Default)]
     public global::System.Collections.Generic.List<mesos.InverseOffer> inverse_offers
     {
       get { return _inverse_offers; }
@@ -142,6 +176,23 @@ namespace mesos.scheduler
     {
       get { return _offer_id; }
       set { _offer_id = value; }
+    }
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
+  [global::ProtoBuf.ProtoContract(Name=@"RescindInverseOffer")]
+  public partial class RescindInverseOffer : global::ProtoBuf.IExtensible
+  {
+    public RescindInverseOffer() {}
+    
+    private mesos.OfferID _inverse_offer_id;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"inverse_offer_id", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public mesos.OfferID inverse_offer_id
+    {
+      get { return _inverse_offer_id; }
+      set { _inverse_offer_id = value; }
     }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
@@ -260,8 +311,14 @@ namespace mesos.scheduler
       [global::ProtoBuf.ProtoEnum(Name=@"OFFERS", Value=2)]
       OFFERS = 2,
             
+      [global::ProtoBuf.ProtoEnum(Name=@"INVERSE_OFFERS", Value=9)]
+      INVERSE_OFFERS = 9,
+            
       [global::ProtoBuf.ProtoEnum(Name=@"RESCIND", Value=3)]
       RESCIND = 3,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"RESCIND_INVERSE_OFFER", Value=10)]
+      RESCIND_INVERSE_OFFER = 10,
             
       [global::ProtoBuf.ProtoEnum(Name=@"UPDATE", Value=4)]
       UPDATE = 4,
@@ -328,6 +385,22 @@ namespace mesos.scheduler
     {
       get { return _decline; }
       set { _decline = value; }
+    }
+    private mesos.scheduler.Call.AcceptInverseOffers _accept_inverse_offers = null;
+    [global::ProtoBuf.ProtoMember(13, IsRequired = false, Name=@"accept_inverse_offers", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.ComponentModel.DefaultValue(null)]
+    public mesos.scheduler.Call.AcceptInverseOffers accept_inverse_offers
+    {
+      get { return _accept_inverse_offers; }
+      set { _accept_inverse_offers = value; }
+    }
+    private mesos.scheduler.Call.DeclineInverseOffers _decline_inverse_offers = null;
+    [global::ProtoBuf.ProtoMember(14, IsRequired = false, Name=@"decline_inverse_offers", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.ComponentModel.DefaultValue(null)]
+    public mesos.scheduler.Call.DeclineInverseOffers decline_inverse_offers
+    {
+      get { return _decline_inverse_offers; }
+      set { _decline_inverse_offers = value; }
     }
     private mesos.scheduler.Call.Kill _kill = null;
     [global::ProtoBuf.ProtoMember(6, IsRequired = false, Name=@"kill", DataFormat = global::ProtoBuf.DataFormat.Default)]
@@ -444,6 +517,56 @@ namespace mesos.scheduler
     public global::System.Collections.Generic.List<mesos.OfferID> offer_ids
     {
       get { return _offer_ids; }
+    }
+  
+    private mesos.Filters _filters = null;
+    [global::ProtoBuf.ProtoMember(2, IsRequired = false, Name=@"filters", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.ComponentModel.DefaultValue(null)]
+    public mesos.Filters filters
+    {
+      get { return _filters; }
+      set { _filters = value; }
+    }
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
+  [global::ProtoBuf.ProtoContract(Name=@"AcceptInverseOffers")]
+  public partial class AcceptInverseOffers : global::ProtoBuf.IExtensible
+  {
+    public AcceptInverseOffers() {}
+    
+    private readonly global::System.Collections.Generic.List<mesos.OfferID> _inverse_offer_ids = new global::System.Collections.Generic.List<mesos.OfferID>();
+    [global::ProtoBuf.ProtoMember(1, Name=@"inverse_offer_ids", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public global::System.Collections.Generic.List<mesos.OfferID> inverse_offer_ids
+    {
+      get { return _inverse_offer_ids; }
+    }
+  
+    private mesos.Filters _filters = null;
+    [global::ProtoBuf.ProtoMember(2, IsRequired = false, Name=@"filters", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.ComponentModel.DefaultValue(null)]
+    public mesos.Filters filters
+    {
+      get { return _filters; }
+      set { _filters = value; }
+    }
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
+  [global::ProtoBuf.ProtoContract(Name=@"DeclineInverseOffers")]
+  public partial class DeclineInverseOffers : global::ProtoBuf.IExtensible
+  {
+    public DeclineInverseOffers() {}
+    
+    private readonly global::System.Collections.Generic.List<mesos.OfferID> _inverse_offer_ids = new global::System.Collections.Generic.List<mesos.OfferID>();
+    [global::ProtoBuf.ProtoMember(1, Name=@"inverse_offer_ids", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public global::System.Collections.Generic.List<mesos.OfferID> inverse_offer_ids
+    {
+      get { return _inverse_offer_ids; }
     }
   
     private mesos.Filters _filters = null;
@@ -655,6 +778,12 @@ namespace mesos.scheduler
             
       [global::ProtoBuf.ProtoEnum(Name=@"DECLINE", Value=4)]
       DECLINE = 4,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"ACCEPT_INVERSE_OFFERS", Value=13)]
+      ACCEPT_INVERSE_OFFERS = 13,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"DECLINE_INVERSE_OFFERS", Value=14)]
+      DECLINE_INVERSE_OFFERS = 14,
             
       [global::ProtoBuf.ProtoEnum(Name=@"REVIVE", Value=5)]
       REVIVE = 5,
