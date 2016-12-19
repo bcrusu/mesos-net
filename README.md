@@ -1,13 +1,11 @@
-# mesos-clr: Mesos bindings for the CLR
+# mesos-net: Mesos API for .NET
 
 ### Status
 
-Full API bindings consistent with the API provided by Mesos 0.26.0.
+Compatible with Mesos 1.1.0 V0 API.
 
 ### Items left to do:
 
-- [ ] CoreCLR support
 - [ ] More testing
 - [ ] NuGet package
 - [ ] CI build system
-
