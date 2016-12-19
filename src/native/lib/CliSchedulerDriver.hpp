@@ -7,7 +7,7 @@
 
 using namespace mesos;
 
-namespace mesosclr {
+namespace mesosnet {
 
 class CliSchedulerDriver: public MesosSchedulerDriver {
 public:

@@ -1,6 +1,6 @@
 #include "Common.hpp"
 
-namespace mesosclr {
+namespace mesosnet {
 
 ScopedByteArray::ScopedByteArray(ByteArray* byteArray) {
 	_byteArray = byteArray;

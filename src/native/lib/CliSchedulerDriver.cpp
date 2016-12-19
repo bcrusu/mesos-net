@@ -1,6 +1,6 @@
 #include "CliSchedulerDriver.hpp"
 
-namespace mesosclr {
+namespace mesosnet {
 
 CliSchedulerDriver::CliSchedulerDriver(CliScheduler* scheduler, const FrameworkInfo& framework, const std::string& master,
 		bool implicitAcknowledgements) :

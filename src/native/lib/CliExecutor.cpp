@@ -1,7 +1,7 @@
 #include "CliExecutor.hpp"
 #include "Common.hpp"
 
-namespace mesosclr {
+namespace mesosnet {
 
 CliExecutor::CliExecutor(long managedExecutorDriverId, ManagedExecutorInterface executorInterface) {
 	_managedExecutorDriverId = managedExecutorDriverId;

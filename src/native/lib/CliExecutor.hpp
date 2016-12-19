@@ -9,7 +9,7 @@
 using std::string;
 using namespace mesos;
 
-namespace mesosclr {
+namespace mesosnet {
 
 class CliExecutor: public Executor {
 public:

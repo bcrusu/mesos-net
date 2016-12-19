@@ -3,7 +3,7 @@
 
 #include "Common.hpp"
 
-namespace mesosclr {
+namespace mesosnet {
 
 typedef void Executor_Registered(long managedDriverId, ByteArray* executorInfo, ByteArray* frameworkInfo, ByteArray* slaveInfo);
 typedef void Executor_Reregistered(long managedDriverId, ByteArray* slaveInfo);

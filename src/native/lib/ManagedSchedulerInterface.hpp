@@ -3,7 +3,7 @@
 
 #include "Common.hpp"
 
-namespace mesosclr {
+namespace mesosnet {
 
 typedef void Scheduler_Registered(long managedDriverId, ByteArray* frameworkId, ByteArray* masterInfo);
 typedef void Scheduler_Reregistered(long managedDriverId, ByteArray* masterInfo);

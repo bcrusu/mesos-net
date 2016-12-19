@@ -1,6 +1,6 @@
 #include "CliExecutorDriver.hpp"
 
-namespace mesosclr {
+namespace mesosnet {
 
 CliExecutorDriver::CliExecutorDriver(CliExecutor* executor) :
 		MesosExecutorDriver(executor) {

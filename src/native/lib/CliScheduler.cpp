@@ -1,7 +1,7 @@
 #include "CliScheduler.hpp"
 #include "Common.hpp"
 
-namespace mesosclr {
+namespace mesosnet {
 
 CliScheduler::CliScheduler(long managedSchedulerDriverId, ManagedSchedulerInterface schedulerInterface) {
 	_managedSchedulerDriverId = managedSchedulerDriverId;

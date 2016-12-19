@@ -8,7 +8,7 @@ using namespace mesos;
 using std::string;
 using std::vector;
 
-namespace mesosclr {
+namespace mesosnet {
 
 class CliScheduler: public Scheduler {
 public:

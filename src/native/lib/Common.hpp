@@ -4,7 +4,7 @@
 #include <google/protobuf/message.h>
 #include <google/protobuf/io/zero_copy_stream_impl.h>
 
-namespace mesosclr {
+namespace mesosnet {
 
 struct ByteArray {
 public:
