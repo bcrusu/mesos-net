@@ -1,8 +1,8 @@
-# mesos-net: Mesos API for .NET
+# mesos-net: Apache Mesos API for .NET
 
 ### Status
 
-Compatible with Mesos 1.1.0 V0 API.
+Compatible with Apache Mesos 1.1.0 v0 API.
 
 ### Items left to do:
 
