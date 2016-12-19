@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.26014.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{BE333FB4-6ED9-4DF3-B796-CB904D6F0FDC}"
 EndProject
@@ -10,7 +10,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		global.json = global.json
 	EndProjectSection
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "mesosclr", "src\mesosclr\mesosclr.xproj", "{590E14A4-3B7C-420C-A2DE-C34E61A2D414}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mesosclr", "src\mesosclr\mesosclr.csproj", "{590E14A4-3B7C-420C-A2DE-C34E61A2D414}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
